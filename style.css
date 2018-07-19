@@ -1,0 +1,7 @@
+@font-face {font-family:'bitmap';src:url('font.otf');}
+
+* {margin:0;padding:0;cursor:none}
+
+body {background-color:black;font-family:'bitmap';}
+
+canvas {background-color:black;left:50%;top:50%;position:absolute;image-rendering:pixelated;overflow:hidden;display:none;}
