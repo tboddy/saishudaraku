@@ -18,14 +18,11 @@ addImage('bulletBlueBig', 'bullet-big-blue');
 addImage('bulletRed', 'bullet-red');
 addImage('bulletRedBig', 'bullet-big-red');
 addImage('font', 'font');
-addImage('fontNew', 'fontnew');
 addImage('yinYang', 'yinyang');
 addImage('focus', 'focus');
 addImage('power', 'power');
 addImage('playerlife', 'playerlife');
 addImage('startLogo', 'startlogo');
-addImage('startPrompt', 'startprompt');
-addImage('startCredit', 'startcredit');
 addImage('start', 'start');
 addImage('explosion', 'explosions');
 addImage('screen', 'screen');
@@ -153,70 +150,6 @@ getAngle = (a, b) => {
 	return angle;
 },
 
-drawString = (input, x, y, isAlt) => {
-	input.split('').forEach(function(char, i){
-		drawChar(char, x + (i * 8), y, isAlt);
-	});
-},
-
-drawChar = (input, x, y, isAlt) => {
-	let charLeft = 0;
-	const size = 9, sizeY = 10;
-	switch(input){
-		// case '0': charLeft = numStart; break;
-		case '!': charLeft = size; break;
-		case '"': charLeft = size * 2; break;
-		case '#': charLeft = size * 3; break;
-		case '$': charLeft = size * 4; break;
-		case '%': charLeft = size * 5; break;
-		case '&': charLeft = size * 6; break;
-		case '\'': charLeft = size * 7; break;
-		case '(': charLeft = size * 8; break;
-		case ')': charLeft = size * 9; break;
-		case '*': charLeft = size * 10; break;
-		case '+': charLeft = size * 11; break;
-		case ',': charLeft = size * 12; break;
-		case '-': charLeft = size * 13; break;
-		case '.': charLeft = size * 14; break;
-		case '/': charLeft = size * 15; break;
-		case '0': charLeft = size * 16; break;
-		case '1': charLeft = size * 17; break;
-		case '2': charLeft = size * 18; break;
-		case '3': charLeft = size * 19; break;
-		case '4': charLeft = size * 20; break;
-		case '5': charLeft = size * 21; break;
-		case '6': charLeft = size * 22; break;
-		case '7': charLeft = size * 23; break;
-		case '8': charLeft = size * 24; break;
-		case '9': charLeft = size * 25; break;
-		case ':': charLeft = size * 26; break;
-		case ';': charLeft = size * 27; break;
-		case '<': charLeft = size * 28; break;
-		case '=': charLeft = size * 29; break;
-		case '>': charLeft = size * 30; break;
-		case '?': charLeft = size * 31; break;
-		case '@': charLeft = size * 32; break;
-		case 'A': charLeft = size * 33; break;
-		case 'B': charLeft = size * 34; break;
-		case 'C': charLeft = size * 35; break;
-		case 'D': charLeft = size * 36; break;
-		case 'E': charLeft = size * 37; break;
-		case 'F': charLeft = size * 38; break;
-	};
-	context.drawImage(img.font, charLeft, 0, size - 1, sizeY, x, y, size - 1, sizeY);
-},
-
-writeString = (input, x, y, color, large) => {
-	context.save();
-	context.font = large ? '16px bitmap' : '8px bitmap';
-	context.fillStyle = colors.dark;
-	if(large) y += 8;
-	context.fillText(input, x, 8 + y);
-	context.fillStyle = color ? color : colors.light;
-	context.fillText(input, x, 7 + y);
-	context.restore();
-},
-
 checkCollision = function(elA, elB, callback){
 	if(elA.x <= elB.x + elB.width &&
 		elA.x + elA.width >= elB.x &&
@@ -327,7 +260,7 @@ utilities = {
 				case ' ': charLeft = size * 90; break;
 			};
 			// console.log(charLeft)
-			context.drawImage(img.fontNew, charLeft, charY, size - 1, sizeY, x, y, size - 1, sizeY);
+			context.drawImage(img.font, charLeft, charY, size - 1, sizeY, x, y, size - 1, sizeY);
 		};
 		input.split('').forEach(function(char, i){
 			drawChar(char, x + i * 8);
