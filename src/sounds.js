@@ -1,6 +1,6 @@
-const isMuted = false;
+const isMuted = false,
 
-const sounds = {
+sounds = {
 	bulletOne: new Howl({src: ['sound/bullet1.wav'], volume: .1}),
 	bulletTwo: new Howl({src: ['sound/bullet2.wav'], volume: .1}),
 	bulletThree: new Howl({src: ['sound/bullet3.wav'], volume: .1}),

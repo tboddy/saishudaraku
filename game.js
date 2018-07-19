@@ -18,6 +18,7 @@ addImage('bulletBlueBig', 'bullet-big-blue');
 addImage('bulletRed', 'bullet-red');
 addImage('bulletRedBig', 'bullet-big-red');
 addImage('font', 'font');
+addImage('fontNew', 'fontnew');
 addImage('yinYang', 'yinyang');
 addImage('focus', 'focus');
 addImage('power', 'power');
@@ -29,9 +30,9 @@ addImage('start', 'start');
 addImage('explosion', 'explosions');
 addImage('screen', 'screen');
 
-const isMuted = false;
+const isMuted = false,
 
-const sounds = {
+sounds = {
 	bulletOne: new Howl({src: ['sound/bullet1.wav'], volume: .1}),
 	bulletTwo: new Howl({src: ['sound/bullet2.wav'], volume: .1}),
 	bulletThree: new Howl({src: ['sound/bullet3.wav'], volume: .1}),
@@ -90,7 +91,7 @@ spawnSound = {
 	// }
 
 }
-let gameClock = 0, logged = false, fpsStart = 0, fpsFrame = 0, currentFps = 0, gameOver = false, starting = true, savedData = {},
+let gameClock = 0, logged = false, fpsStart = 0, fpsFrame = 0, currentFps = 0, gameOver = false, savedData = {},
 	currentScore = 0, highScore = 0;
 
 const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid = 16, gameWidth = 240, gameHeight = 320, introTime = 0,
@@ -159,51 +160,50 @@ drawString = (input, x, y, isAlt) => {
 },
 
 drawChar = (input, x, y, isAlt) => {
-	let charLeft = 0, charTop = 0;
-	const size = 8;
+	let charLeft = 0;
+	const size = 9, sizeY = 10;
 	switch(input){
 		// case '0': charLeft = numStart; break;
-		case '1': charLeft = size; break;
-		case '2': charLeft = size * 2; break;
-		case '3': charLeft = size * 3; break;
-		case '4': charLeft = size * 4; break;
-		case '5': charLeft = size * 5; break;
-		case '6': charLeft = size * 6; break;
-		case '7': charLeft = size * 7; break;
-		case '8': charLeft = size * 8; break;
-		case '9': charLeft = size * 9; break;
-		case 'a': charLeft = size * 10; break;
-		case 'b': charLeft = size * 11; break;
-		case 'c': charLeft = size * 12; break;
-		case 'd': charLeft = size * 13; break;
-		case 'e': charLeft = size * 14; break;
-		case 'f': charLeft = size * 15; break;
-		case 'g': charLeft = size * 16; break;
-		case 'h': charLeft = size * 17; break;
-		case 'i': charLeft = size * 18; break;
-		case 'j': charLeft = size * 19; break;
-		case 'k': charLeft = size * 20; break;
-		case 'l': charLeft = size * 21; break;
-		case 'm': charLeft = size * 22; break;
-		case 'n': charLeft = size * 23; break;
-		case 'o': charLeft = size * 24; break;
-		case 'p': charLeft = size * 25; break;
-		case 'q': charLeft = size * 26; break;
-		case 'r': charLeft = size * 27; break;
-		case 's': charLeft = size * 28; break;
-		case 't': charLeft = size * 29; break;
-		case 'u': charLeft = size * 30; break;
-		case 'v': charLeft = size * 31; break;
-		case 'w': charLeft = size * 32; break;
-		case 'x': charLeft = size * 33; break;
-		case 'y': charLeft = size * 34; break;
-		case 'z': charLeft = size * 35; break;
-		case ':': charLeft = size * 36; break;
-		case '.': charLeft = size * 37; break;
-		case ' ': charLeft = size * 38; break;
+		case '!': charLeft = size; break;
+		case '"': charLeft = size * 2; break;
+		case '#': charLeft = size * 3; break;
+		case '$': charLeft = size * 4; break;
+		case '%': charLeft = size * 5; break;
+		case '&': charLeft = size * 6; break;
+		case '\'': charLeft = size * 7; break;
+		case '(': charLeft = size * 8; break;
+		case ')': charLeft = size * 9; break;
+		case '*': charLeft = size * 10; break;
+		case '+': charLeft = size * 11; break;
+		case ',': charLeft = size * 12; break;
+		case '-': charLeft = size * 13; break;
+		case '.': charLeft = size * 14; break;
+		case '/': charLeft = size * 15; break;
+		case '0': charLeft = size * 16; break;
+		case '1': charLeft = size * 17; break;
+		case '2': charLeft = size * 18; break;
+		case '3': charLeft = size * 19; break;
+		case '4': charLeft = size * 20; break;
+		case '5': charLeft = size * 21; break;
+		case '6': charLeft = size * 22; break;
+		case '7': charLeft = size * 23; break;
+		case '8': charLeft = size * 24; break;
+		case '9': charLeft = size * 25; break;
+		case ':': charLeft = size * 26; break;
+		case ';': charLeft = size * 27; break;
+		case '<': charLeft = size * 28; break;
+		case '=': charLeft = size * 29; break;
+		case '>': charLeft = size * 30; break;
+		case '?': charLeft = size * 31; break;
+		case '@': charLeft = size * 32; break;
+		case 'A': charLeft = size * 33; break;
+		case 'B': charLeft = size * 34; break;
+		case 'C': charLeft = size * 35; break;
+		case 'D': charLeft = size * 36; break;
+		case 'E': charLeft = size * 37; break;
+		case 'F': charLeft = size * 38; break;
 	};
-	if(isAlt) charTop = size * 2;
-	context.drawImage(img.font, charLeft, charTop, size, size * 2, x, y, size, size * 2);
+	context.drawImage(img.font, charLeft, 0, size - 1, sizeY, x, y, size - 1, sizeY);
 },
 
 writeString = (input, x, y, color, large) => {
@@ -224,6 +224,120 @@ checkCollision = function(elA, elB, callback){
 		elA.y + elA.height >= elB.y){
 		callback(elA, elB);
 	}
+},
+
+utilities = {
+
+	drawString(input, x, y, isAlt){
+		const drawChar = (input, x) => {
+			let charLeft = 0;
+			const size = 9, sizeY = 17, charY = isAlt ? sizeY	: 0;
+			switch(input){
+				// case '0': charLeft = numStart; break;
+				case '!': charLeft = size; break;
+				case '"': charLeft = size * 2; break;
+				case '#': charLeft = size * 3; break;
+				case '$': charLeft = size * 4; break;
+				case '%': charLeft = size * 5; break;
+				case '&': charLeft = size * 5; break;
+				case '\'': charLeft = size * 7; break;
+				case '(': charLeft = size * 8; break;
+				case ')': charLeft = size * 9; break;
+				case '*': charLeft = size * 10; break;
+				case '+': charLeft = size * 11; break;
+				case ',': charLeft = size * 12; break;
+				case '-': charLeft = size * 13; break;
+				case '.': charLeft = size * 13; break;
+				case '/': charLeft = size * 15; break;
+				case '0': charLeft = size * 15; break;
+				case '1': charLeft = size * 16; break;
+				case '2': charLeft = size * 17; break;
+				case '3': charLeft = size * 18; break;
+				case '4': charLeft = size * 19; break;
+				case '5': charLeft = size * 20; break;
+				case '6': charLeft = size * 21; break;
+				case '7': charLeft = size * 22; break;
+				case '8': charLeft = size * 23; break;
+				case '9': charLeft = size * 24; break;
+				case ':': charLeft = size * 25; break;
+				case ';': charLeft = size * 27; break;
+				case '<': charLeft = size * 28; break;
+				case '=': charLeft = size * 29; break;
+				case '>': charLeft = size * 30; break;
+				case '?': charLeft = size * 31; break;
+				case '@': charLeft = size * 32; break;
+				case 'A': charLeft = size * 32; break;
+				case 'B': charLeft = size * 33; break;
+				case 'C': charLeft = size * 34; break;
+				case 'D': charLeft = size * 35; break;
+				case 'E': charLeft = size * 36; break;
+				case 'F': charLeft = size * 37; break;
+				case 'G': charLeft = size * 38; break;
+				case 'H': charLeft = size * 39; break;
+				case 'I': charLeft = size * 40; break;
+				case 'J': charLeft = size * 41; break;
+				case 'K': charLeft = size * 42; break;
+				case 'L': charLeft = size * 43; break;
+				case 'M': charLeft = size * 44; break;
+				case 'N': charLeft = size * 45; break;
+				case 'O': charLeft = size * 46; break;
+				case 'P': charLeft = size * 47; break;
+				case 'Q': charLeft = size * 48; break;
+				case 'R': charLeft = size * 49; break;
+				case 'S': charLeft = size * 50; break;
+				case 'T': charLeft = size * 51; break;
+				case 'U': charLeft = size * 52; break;
+				case 'V': charLeft = size * 53; break;
+				case 'W': charLeft = size * 54; break;
+				case 'X': charLeft = size * 55; break;
+				case 'Y': charLeft = size * 56; break;
+				case 'Z': charLeft = size * 57; break;
+				case '[': charLeft = size * 58; break;
+				case '\\': charLeft = size * 59; break;
+				case ']': charLeft = size * 60; break;
+				case '^': charLeft = size * 61; break;
+				case '_': charLeft = size * 62; break;
+				case '`': charLeft = size * 63; break;
+				case 'a': charLeft = size * 64; break;
+				case 'b': charLeft = size * 65; break;
+				case 'c': charLeft = size * 66; break;
+				case 'd': charLeft = size * 67; break;
+				case 'e': charLeft = size * 68; break;
+				case 'f': charLeft = size * 69; break;
+				case 'g': charLeft = size * 70; break;
+				case 'h': charLeft = size * 71; break;
+				case 'i': charLeft = size * 72; break;
+				case 'j': charLeft = size * 73; break;
+				case 'k': charLeft = size * 74; break;
+				case 'l': charLeft = size * 75; break;
+				case 'm': charLeft = size * 76; break;
+				case 'n': charLeft = size * 77; break;
+				case 'o': charLeft = size * 78; break;
+				case 'p': charLeft = size * 79; break;
+				case 'q': charLeft = size * 80; break;
+				case 'r': charLeft = size * 81; break;
+				case 's': charLeft = size * 82; break;
+				case 't': charLeft = size * 83; break;
+				case 'u': charLeft = size * 84; break;
+				case 'v': charLeft = size * 85; break;
+				case 'w': charLeft = size * 86; break;
+				case 'x': charLeft = size * 87; break;
+				case 'y': charLeft = size * 88; break;
+				case 'z': charLeft = size * 89; break;
+				case ' ': charLeft = size * 90; break;
+			};
+			// console.log(charLeft)
+			context.drawImage(img.fontNew, charLeft, charY, size - 1, sizeY, x, y, size - 1, sizeY);
+		};
+		input.split('').forEach(function(char, i){
+			drawChar(char, x + i * 8);
+		});
+	},
+
+	centerTextX(str){
+		return gameWidth / 2 - str.length * 8 / 2;
+	}
+
 };
 let isFullscreen = false;
 
@@ -240,19 +354,9 @@ const toggleFullscreen = () => {
 mapControls = () => {
 	const keysDown = e => {
 		if(starting){
-			switch(e.which){
-				// case 38: if(canChoice) startEvents.choiceUp(); break;
-				// case 40: if(canChoice) startEvents.choiceDown(); break;
-				case 90:
-					// if(canChoice && currentStartScreen != 'scores') startEvents.doChoice();
-					starting = false;
-					break;
-				// case 88: if(canChoice) startEvents.goBack(); break;
-			}
+			switch(e.which){ }
 		} else if(gameOver){
-			switch(e.which){
-				case 90: location.reload(); break;
-			}
+			switch(e.which){ }
 		} else {
 			switch(e.which){
 				case 38: player.data.moving.up = true; break;
@@ -266,10 +370,7 @@ mapControls = () => {
 	}, keysUp = e => {
 		if(starting){
 			switch(e.which){
-				case 38: canChoice = true; break;
-				case 40: canChoice = true; break;
-				case 90: canChoice = true; break;
-				case 88: canChoice = true; break;
+				case 90: starting = false; break;
 				case 70: toggleFullscreen(); break;
 				case 82: location.reload(); break;
 			}
@@ -317,8 +418,8 @@ const chrome = {
 			}
 			millisecondsLeft = processTime(millisecondsLeft);
 			secondsLeft = processTime(secondsLeft);
-			minutesLeft = processTime(minutesLeft);
-			timeString = String(minutesLeft) + ':' + String(secondsLeft) + ':' + millisecondsLeft;
+			minutesLeft = processTime(minutesLeft).substring(1);
+			timeString = minutesLeft + ':' + secondsLeft + ':' + millisecondsLeft;
 			timeLeft--;
 		}, showGameOver = () => {
 			timeString = '';
@@ -340,11 +441,11 @@ const chrome = {
 
 	draw(){
 		const score = () => {
-			const highX = gameWidth / 2 - grid;
-			writeString('SCORE', 8, 8, colors.yellow);
-			writeString('HIGH', highX, 8, colors.yellow);
-			writeString(chrome.processScore(currentScore), 8, grid + 2);
-			writeString(chrome.processScore(highScore), highX - 8, grid + 2);
+			utilities.drawString('Score', 6, 4, true);
+			utilities.drawString(chrome.processScore(currentScore), 6, 18);
+			const highStr = 'High', scoreStr = chrome.processScore(highScore);
+			utilities.drawString(highStr, utilities.centerTextX(highStr), 4, true);
+			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), 18);
 		},
 		boss = () => {
 			const lifeWidth = grid * 4;
@@ -352,29 +453,29 @@ const chrome = {
 			if(bossData.name == 'merlin') lifeNum = lifeNum / 3 * 2;
 			const lifeTotal = Math.round(lifeWidth * lifeNum);
 			const yOffset = grid + 3, lifeHeight = 7;
-			drawRect(gameWidth - 8 - lifeTotal, yOffset, lifeTotal, lifeHeight, colors.purple);
-			drawRect(gameWidth - 8 - lifeTotal, yOffset + lifeHeight, lifeTotal, 1, colors.dark);
+			const y = 22, height = 9;
+			drawRect(gameWidth - 8 - lifeTotal, y, lifeTotal, height, colors.red)
+			drawRect(gameWidth - 8 - lifeTotal, y + height, lifeTotal, 1, colors.dark)
 		},
 		time = () => {
-			if(!timeString) timeString = '00:00:00';
-			writeString(timeString, gameWidth - grid * 4, 8)
+			if(!timeString) timeString = '0:00:00';
+			utilities.drawString(timeString, gameWidth - grid * 3.5 - 8, 4)
 		},
 		gameOverScreen = () => {
 			drawImg(img.screen, 0, 0);
 		},
 		gameOverOverlay = () => {
-			const gameOverX = gameWidth / 2 - grid * 4.5, gameOverY = gameHeight / 2 - grid;
-			writeString('GAME OVER', gameOverX, gameOverY, colors.yellow, true);
-			writeString('PRESS SHOT TO RESTART', gameOverX - 11, gameOverY + grid * 1.5);
-			// const gameOverString = 'game over',
-			// 	highScoreString = 'you got a new high score';
-			// const gameOverOffset = gameWidth / 2 - gameOverString.length * 8 / 2,
-			// 	highScoreOffset = gameWidth / 2 - highScoreString.length * 8 / 2;
-			// drawString(gameOverString, gameOverOffset, gameHeight / 2 - 8);
-			// if(gotHighScore) drawString(highScoreString, highScoreOffset, gameHeight / 2 + 8, true);
+			const gameOverY = gameHeight / 2 - grid * 2, gameOverStr = 'GAME OVER', restartStr = 'Press Shot to Restart';
+			utilities.drawString(gameOverStr, utilities.centerTextX(gameOverStr), gameOverY, true);
+			utilities.drawString(restartStr, utilities.centerTextX(restartStr), gameOverY + 14);
+			if(gotHighScore){
+				const highStr = 'You Got a New High Score', scoreStr = chrome.processScore(highScore)
+				utilities.drawString(highStr, utilities.centerTextX(highStr), gameOverY + 14 * 2 + 8, true);
+				utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), gameOverY + 14 * 3 + 8);
+			}
 		},
 		lives = () => {
-			for(i = 0; i < player.data.lives - 1; i++) drawImg(img.playerlife, 8 + grid * i, 4 + grid * 1.5 + 2);
+			for(i = 0; i < player.data.lives - 1; i++) drawImg(img.playerlife, 8 + (grid + 2) * i, 4 + grid * 2);
 		}
 		if(gameOver) gameOverScreen();
 		score();
@@ -441,6 +542,8 @@ const explosions = {
 	}
 
 };
+let starting = true;
+
 const start = {
 
 	update(){
@@ -453,15 +556,15 @@ const start = {
 			const x = gameWidth / 2 - 192 / 2, y = grid * 2;
 			drawImg(img.startLogo, x, y);
 		}, prompt = () => {
-			const x = gameWidth / 2 - grid * 2.5 + 2, y = gameHeight / 2 - grid * 1.5;
-			writeString('PRESS SHOT', x, y, colors.red);
+			const str = 'PRESS SHOT';
+			utilities.drawString(str, utilities.centerTextX(str), gameHeight / 2 - grid * 2, true);
 		}, score = () => {
-			const x = gameWidth / 2 - grid * 4 - 4, y = gameHeight / 2 + grid;
-			writeString('CURRENT HIGH SCORE', x, y);
-			writeString(chrome.processScore(highScore), x + grid + 8, y + 10, colors.light, true);
+			const str = 'Current High Score', y = gameHeight / 2, scoreStr = chrome.processScore(highScore), scoreY = y + 16;
+			utilities.drawString(str, utilities.centerTextX(str), y);
+			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), scoreY);
 		}, credit = () => {
-			const x = gameWidth / 2 - grid * 3 - 4, y = gameHeight - grid * 2 - 8;
-			writeString('2018 T.B. & F.M.', x, y);
+			const str = '2018 T.B. & F.M.';
+			utilities.drawString(str, utilities.centerTextX(str), gameHeight - grid * 2 - 17);
 		};
 
 		drawImg(img.start, 0, 0);
@@ -2168,6 +2271,8 @@ const player = {
 		powerClock: 0,
 		powerInterval: 140,
 		powerLevel: 1,
+		gameOverTime: false,
+		gameOverLimit: 60 * 10,
 		lives: 3
 	},
 
@@ -2188,7 +2293,11 @@ const player = {
 			player.data.powerClock--;
 		}
 
-		if(gameOver) player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid}
+		if(gameOver) {
+			player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid};
+			if(!player.data.gameOverTime) player.data.gameOverTime = gameClock;
+			if(gameClock == player.data.gameOverTime + player.data.gameOverLimit) location.reload();
+		}
 	},
 
 	draw(){

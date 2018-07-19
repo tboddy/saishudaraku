@@ -16,6 +16,8 @@ const player = {
 		powerClock: 0,
 		powerInterval: 140,
 		powerLevel: 1,
+		gameOverTime: false,
+		gameOverLimit: 60 * 10,
 		lives: 3
 	},
 
@@ -36,7 +38,11 @@ const player = {
 			player.data.powerClock--;
 		}
 
-		if(gameOver) player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid}
+		if(gameOver) {
+			player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid};
+			if(!player.data.gameOverTime) player.data.gameOverTime = gameClock;
+			if(gameClock == player.data.gameOverTime + player.data.gameOverLimit) location.reload();
+		}
 	},
 
 	draw(){

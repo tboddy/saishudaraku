@@ -21,8 +21,8 @@ const chrome = {
 			}
 			millisecondsLeft = processTime(millisecondsLeft);
 			secondsLeft = processTime(secondsLeft);
-			minutesLeft = processTime(minutesLeft);
-			timeString = String(minutesLeft) + ':' + String(secondsLeft) + ':' + millisecondsLeft;
+			minutesLeft = processTime(minutesLeft).substring(1);
+			timeString = minutesLeft + ':' + secondsLeft + ':' + millisecondsLeft;
 			timeLeft--;
 		}, showGameOver = () => {
 			timeString = '';
@@ -44,11 +44,11 @@ const chrome = {
 
 	draw(){
 		const score = () => {
-			const highX = gameWidth / 2 - grid;
-			writeString('SCORE', 8, 8, colors.yellow);
-			writeString('HIGH', highX, 8, colors.yellow);
-			writeString(chrome.processScore(currentScore), 8, grid + 2);
-			writeString(chrome.processScore(highScore), highX - 8, grid + 2);
+			utilities.drawString('Score', 6, 4, true);
+			utilities.drawString(chrome.processScore(currentScore), 6, 18);
+			const highStr = 'High', scoreStr = chrome.processScore(highScore);
+			utilities.drawString(highStr, utilities.centerTextX(highStr), 4, true);
+			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), 18);
 		},
 		boss = () => {
 			const lifeWidth = grid * 4;
@@ -56,29 +56,29 @@ const chrome = {
 			if(bossData.name == 'merlin') lifeNum = lifeNum / 3 * 2;
 			const lifeTotal = Math.round(lifeWidth * lifeNum);
 			const yOffset = grid + 3, lifeHeight = 7;
-			drawRect(gameWidth - 8 - lifeTotal, yOffset, lifeTotal, lifeHeight, colors.purple);
-			drawRect(gameWidth - 8 - lifeTotal, yOffset + lifeHeight, lifeTotal, 1, colors.dark);
+			const y = 22, height = 9;
+			drawRect(gameWidth - 8 - lifeTotal, y, lifeTotal, height, colors.red)
+			drawRect(gameWidth - 8 - lifeTotal, y + height, lifeTotal, 1, colors.dark)
 		},
 		time = () => {
-			if(!timeString) timeString = '00:00:00';
-			writeString(timeString, gameWidth - grid * 4, 8)
+			if(!timeString) timeString = '0:00:00';
+			utilities.drawString(timeString, gameWidth - grid * 3.5 - 8, 4)
 		},
 		gameOverScreen = () => {
 			drawImg(img.screen, 0, 0);
 		},
 		gameOverOverlay = () => {
-			const gameOverX = gameWidth / 2 - grid * 4.5, gameOverY = gameHeight / 2 - grid;
-			writeString('GAME OVER', gameOverX, gameOverY, colors.yellow, true);
-			writeString('PRESS SHOT TO RESTART', gameOverX - 11, gameOverY + grid * 1.5);
-			// const gameOverString = 'game over',
-			// 	highScoreString = 'you got a new high score';
-			// const gameOverOffset = gameWidth / 2 - gameOverString.length * 8 / 2,
-			// 	highScoreOffset = gameWidth / 2 - highScoreString.length * 8 / 2;
-			// drawString(gameOverString, gameOverOffset, gameHeight / 2 - 8);
-			// if(gotHighScore) drawString(highScoreString, highScoreOffset, gameHeight / 2 + 8, true);
+			const gameOverY = gameHeight / 2 - grid * 2, gameOverStr = 'GAME OVER', restartStr = 'Press Shot to Restart';
+			utilities.drawString(gameOverStr, utilities.centerTextX(gameOverStr), gameOverY, true);
+			utilities.drawString(restartStr, utilities.centerTextX(restartStr), gameOverY + 14);
+			if(gotHighScore){
+				const highStr = 'You Got a New High Score', scoreStr = chrome.processScore(highScore)
+				utilities.drawString(highStr, utilities.centerTextX(highStr), gameOverY + 14 * 2 + 8, true);
+				utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), gameOverY + 14 * 3 + 8);
+			}
 		},
 		lives = () => {
-			for(i = 0; i < player.data.lives - 1; i++) drawImg(img.playerlife, 8 + grid * i, 4 + grid * 1.5 + 2);
+			for(i = 0; i < player.data.lives - 1; i++) drawImg(img.playerlife, 8 + (grid + 2) * i, 4 + grid * 2);
 		}
 		if(gameOver) gameOverScreen();
 		score();

@@ -13,19 +13,9 @@ const toggleFullscreen = () => {
 mapControls = () => {
 	const keysDown = e => {
 		if(starting){
-			switch(e.which){
-				// case 38: if(canChoice) startEvents.choiceUp(); break;
-				// case 40: if(canChoice) startEvents.choiceDown(); break;
-				case 90:
-					// if(canChoice && currentStartScreen != 'scores') startEvents.doChoice();
-					starting = false;
-					break;
-				// case 88: if(canChoice) startEvents.goBack(); break;
-			}
+			switch(e.which){ }
 		} else if(gameOver){
-			switch(e.which){
-				case 90: location.reload(); break;
-			}
+			switch(e.which){ }
 		} else {
 			switch(e.which){
 				case 38: player.data.moving.up = true; break;
@@ -39,10 +29,7 @@ mapControls = () => {
 	}, keysUp = e => {
 		if(starting){
 			switch(e.which){
-				case 38: canChoice = true; break;
-				case 40: canChoice = true; break;
-				case 90: canChoice = true; break;
-				case 88: canChoice = true; break;
+				case 90: starting = false; break;
 				case 70: toggleFullscreen(); break;
 				case 82: location.reload(); break;
 			}

@@ -18,6 +18,7 @@ addImage('bulletBlueBig', 'bullet-big-blue');
 addImage('bulletRed', 'bullet-red');
 addImage('bulletRedBig', 'bullet-big-red');
 addImage('font', 'font');
+addImage('fontNew', 'fontnew');
 addImage('yinYang', 'yinyang');
 addImage('focus', 'focus');
 addImage('power', 'power');
