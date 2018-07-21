@@ -12,16 +12,16 @@ const start = {
 			const x = gameWidth / 2 - 192 / 2, y = grid * 2;
 			drawImg(img.startLogo, x, y);
 		}, prompt = () => {
-			const str = 'PRESS SHOT', y = grid * 7 + 4;
-			utilities.drawString(str, utilities.centerTextX(str), y, true);
+			const str = 'press shot', y = grid * 7 + 4;
+			utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y, true);
 		}, score = () => {
-			const str = 'Current High Score', y = gameHeight / 2 - 12 - 4, scoreStr = chrome.processScore(highScore), scoreY = y + 16;
+			const str = 'Current High Score', y = gameHeight / 2 - 12 - 8, scoreStr = chrome.processScore(highScore), scoreY = y + 16;
 			utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y);
 			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), scoreY);
 		}, instructions = () => {
 			const strs = [
-				'Z: Shot',
-				'x: focus',
+				'z (tap): shot',
+				'z (hold): focus',
 				'R: Restart',
 				'F: Fullscreen'
 			], y = gameHeight / 2 + grid * 2 - 4;

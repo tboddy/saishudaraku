@@ -3,7 +3,7 @@ const bulletsPlayer = {
 	data(type){
 		const bulletObject = {
 			size: {x: 8, y: 12},
-			speed: {x: 0, y: 20},
+			speed: {x: 0, y: 18},
 			id: randomId()
 		};
 		bulletObject.position = {x: player.data.position.x + player.data.size.x / 2 - bulletObject.size.x / 2, y: player.data.position.y}
@@ -64,34 +64,29 @@ const bulletsPlayer = {
 			bulletsPlayer.data('leftA'),
 			bulletsPlayer.data('rightA')
 		];
-		if(player.data.powerLevel >= 2){
-			bulletsArray.push(bulletsPlayer.data('leftB'));
-			bulletsArray.push(bulletsPlayer.data('rightB'));
-			if(player.data.powerLevel >= 3){
-				bulletsArray.push(bulletsPlayer.data('leftC'));
-				bulletsArray.push(bulletsPlayer.data('rightC'));
-				if(player.data.powerLevel >= 4){
-					bulletsArray.push(bulletsPlayer.data('leftD'));
-					bulletsArray.push(bulletsPlayer.data('rightD'));
-					if(player.data.powerLevel >= 5){
-						bulletsArray.push(bulletsPlayer.data('leftE'));
-						bulletsArray.push(bulletsPlayer.data('rightE'));
-					} 
-				} 
-			} 
-		}
+		// if(player.data.powerLevel >= 2){
+		// 	bulletsArray.push(bulletsPlayer.data('leftB'));
+		// 	bulletsArray.push(bulletsPlayer.data('rightB'));
+		// 	if(player.data.powerLevel >= 3){
+		// 		bulletsArray.push(bulletsPlayer.data('leftC'));
+		// 		bulletsArray.push(bulletsPlayer.data('rightC'));
+		// 		if(player.data.powerLevel >= 4){
+		// 			bulletsArray.push(bulletsPlayer.data('leftD'));
+		// 			bulletsArray.push(bulletsPlayer.data('rightD'));
+		// 			if(player.data.powerLevel >= 5){
+		// 				bulletsArray.push(bulletsPlayer.data('leftE'));
+		// 				bulletsArray.push(bulletsPlayer.data('rightE'));
+		// 			} 
+		// 		} 
+		// 	} 
+		// }
 		bulletsArray.forEach(bullet => {
 			bulletsPlayer.dump[bullet.id] = bullet;
 		});
-		spawnSound.bulletPlayer()
+		spawnSound.bulletPlayer();
 	},
 
 	update(){
-		if(player.data.shooting && !gameOver){
-			if(player.data.shotClock % player.data.shotTime == 0 || player.data.shotClock % player.data.shotTime == 5 ||
-				player.data.shotClock % player.data.shotTime == 10) bulletsPlayer.spawn();
-			player.data.shotClock++;
-		} else if(player.data.shotClock) player.data.shotClock = 0;
 
 		const doBullet = bullet => {
 			let ySpeed = bullet.speed.y;
@@ -146,16 +141,52 @@ const bulletsPlayer = {
 			if(bullet.type) doTypes();
 			else bullet.position.y -= ySpeed;
 			if(bullet.position.y < 0 - bullet.size.y) delete bulletsPlayer.dump[id];
+		},
+
+		doFocus = () => {
+			if(!player.data.focus){
+				player.data.focusData = {height: 0};
+				player.data.focus = true;
+			}
+			player.data.focusData.x = player.data.position.x;
+			player.data.focusData.width = 6;
+			if(player.data.focusData.height < player.data.focusMax) player.data.focusData.height += player.data.focusGrow;
+			player.data.focusData.y = player.data.position.y - player.data.focusData.height - 4;
+			player.data.focusData.x += player.data.size.x / 2 - player.data.focusData.width / 2;
+			if(player.data.moving.left) player.data.focusData.x -= player.data.moveOffset;
+			else if(player.data.moving.right) player.data.focusData.x += player.data.moveOffset;
+		};
+
+		if(player.data.shooting && !gameOver){
+			if(player.data.shotClock < player.data.shotLimit && player.data.shotClock % player.data.shotTime == 0) bulletsPlayer.spawn();
+			else if(player.data.shotClock >= player.data.shotLimit) doFocus();
+			player.data.shotClock++;
+		} else if(player.data.shotClock){
+			player.data.shotClock = 0;
+			player.data.focus = false;
 		}
 
 		if(Object.keys(bulletsPlayer.dump).length) for(id in bulletsPlayer.dump) doBullet(bulletsPlayer.dump[id]);
 	},
 
 	draw(){
+
 		const doBullet = bullet => {
 			drawImg(img.playerBullet, bullet.position.x, bullet.position.y, bullet.size.x, bullet.size.y);
-		}
+		},
+
+		doFocus = () => {
+			drawRect(player.data.focusData.x, player.data.focusData.y,
+				player.data.focusData.width, player.data.focusData.height, colors.red);
+			drawRect(player.data.focusData.x + 1, player.data.focusData.y,
+				player.data.focusData.width - 2, player.data.focusData.height, colors.peach);
+			drawRect(player.data.focusData.x + 1, player.data.focusData.y + player.data.focusData.height,
+				player.data.focusData.width - 2, 1, colors.red);
+		};
+
 		if(Object.keys(bulletsPlayer.dump).length) for(id in bulletsPlayer.dump) doBullet(bulletsPlayer.dump[id]);
+		if(player.data.focus) doFocus();
+
 	}
 
 };

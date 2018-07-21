@@ -27,7 +27,7 @@ addImage('start', 'start');
 addImage('explosion', 'explosions');
 addImage('screen', 'screen');
 
-const isMuted = false,
+const isMuted = true,
 
 sounds = {
 	bulletOne: new Howl({src: ['sound/bullet1.wav'], volume: .1}),
@@ -174,8 +174,8 @@ utilities = {
 				case '%': charLeft = size * 5; break;
 				case '&': charLeft = size * 5; break;
 				case '\'': charLeft = size * 7; break;
-				case '(': charLeft = size * 8; break;
-				case ')': charLeft = size * 9; break;
+				case '(': charLeft = size * 7; break;
+				case ')': charLeft = size * 8; break;
 				case '*': charLeft = size * 10; break;
 				case '+': charLeft = size * 11; break;
 				case ',': charLeft = size * 12; break;
@@ -297,7 +297,7 @@ mapControls = () => {
 				case 37: player.data.moving.left = true; break;
 				case 39: player.data.moving.right = true; break;
 				case 90: player.data.shooting = true; break;
-				case 88: player.data.focus = true; break;
+				// case 88: player.data.focus = true; break;
 			}
 		}
 	}, keysUp = e => {
@@ -311,6 +311,7 @@ mapControls = () => {
 			switch(e.which){
 				case 70: toggleFullscreen(); break;
 				case 82: location.reload(); break;
+				case 90: location.reload(); break;
 			}
 		} else {
 			switch(e.which){
@@ -319,7 +320,7 @@ mapControls = () => {
 				case 37: player.data.moving.left = false; break;
 				case 39: player.data.moving.right = false; break;
 				case 90: player.data.shooting = false; break;
-				case 88: player.data.focus = false; break;
+				// case 88: player.data.focus = false; break;
 				case 70: toggleFullscreen(); break;
 				case 82: location.reload(); break;
 			}
@@ -489,16 +490,16 @@ const start = {
 			const x = gameWidth / 2 - 192 / 2, y = grid * 2;
 			drawImg(img.startLogo, x, y);
 		}, prompt = () => {
-			const str = 'PRESS SHOT', y = grid * 7 + 4;
-			utilities.drawString(str, utilities.centerTextX(str), y, true);
+			const str = 'press shot', y = grid * 7 + 4;
+			utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y, true);
 		}, score = () => {
-			const str = 'Current High Score', y = gameHeight / 2 - 12 - 4, scoreStr = chrome.processScore(highScore), scoreY = y + 16;
+			const str = 'Current High Score', y = gameHeight / 2 - 12 - 8, scoreStr = chrome.processScore(highScore), scoreY = y + 16;
 			utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y);
 			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), scoreY);
 		}, instructions = () => {
 			const strs = [
-				'Z: Shot',
-				'x: focus',
+				'z (tap): shot',
+				'z (hold): focus',
 				'R: Restart',
 				'F: Fullscreen'
 			], y = gameHeight / 2 + grid * 2 - 4;
@@ -546,8 +547,7 @@ const collisions = {
 		}
 	},
 
-	playerObj(){
-		return {x: player.data.position.x, y: player.data.position.y, width: player.data.size.x, height: player.data.size.y};
+	playerObj(){ return {x: player.data.position.x, y: player.data.position.y, width: player.data.size.x, height: player.data.size.y};
 	},
 
 	setup(){
@@ -657,6 +657,24 @@ const collisions = {
 			}
 		},
 
+		checkFocusWithEnemies = () => {
+			for(id in enemies.dump){
+				enemy = enemies.dump[id];
+				if(enemy.position.x + enemy.size.x >= player.data.focusData.x &&
+					enemy.position.x <= player.data.focusData.x + player.data.focusData.width &&
+					enemy.position.y + enemy.size.y >= player.data.focusData.y &&
+					player.data.shotClock % player.data.shotTime == 0){
+					player.data.focusData.height -= enemy.position.y + enemy.size.y;
+					enemy.health -= 1;
+					if(bossData) bossData.life -=1;
+					const enemyObj = {x: enemy.position.x, y: enemy.position.y, width: enemy.size.x, height: enemy.size.y};
+					const focusObj = {x: player.data.focusData.x - 12, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
+					explosions.spawn(focusObj, enemyObj);
+				}
+
+			}
+		},
+
 		getDrops = () => {
 			const playerObj = {x: player.data.position.x, y: player.data.position.y, width: player.data.size.x, height: player.data.size.y};
 			collisions.check(collisions.dropPartitions, playerObj, () => {
@@ -677,6 +695,7 @@ const collisions = {
 			if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
 			if(Object.keys(enemies.dump).length && Object.keys(bulletsPlayer.dump).length) checkBulletsWithEnemies();
 			if(Object.keys(drop.dump).length) getDrops();
+			if(player.data.focus && player.data.shooting) checkFocusWithEnemies();
 		}
 	},
 
@@ -2041,7 +2060,7 @@ const bulletsPlayer = {
 	data(type){
 		const bulletObject = {
 			size: {x: 8, y: 12},
-			speed: {x: 0, y: 20},
+			speed: {x: 0, y: 18},
 			id: randomId()
 		};
 		bulletObject.position = {x: player.data.position.x + player.data.size.x / 2 - bulletObject.size.x / 2, y: player.data.position.y}
@@ -2102,34 +2121,29 @@ const bulletsPlayer = {
 			bulletsPlayer.data('leftA'),
 			bulletsPlayer.data('rightA')
 		];
-		if(player.data.powerLevel >= 2){
-			bulletsArray.push(bulletsPlayer.data('leftB'));
-			bulletsArray.push(bulletsPlayer.data('rightB'));
-			if(player.data.powerLevel >= 3){
-				bulletsArray.push(bulletsPlayer.data('leftC'));
-				bulletsArray.push(bulletsPlayer.data('rightC'));
-				if(player.data.powerLevel >= 4){
-					bulletsArray.push(bulletsPlayer.data('leftD'));
-					bulletsArray.push(bulletsPlayer.data('rightD'));
-					if(player.data.powerLevel >= 5){
-						bulletsArray.push(bulletsPlayer.data('leftE'));
-						bulletsArray.push(bulletsPlayer.data('rightE'));
-					} 
-				} 
-			} 
-		}
+		// if(player.data.powerLevel >= 2){
+		// 	bulletsArray.push(bulletsPlayer.data('leftB'));
+		// 	bulletsArray.push(bulletsPlayer.data('rightB'));
+		// 	if(player.data.powerLevel >= 3){
+		// 		bulletsArray.push(bulletsPlayer.data('leftC'));
+		// 		bulletsArray.push(bulletsPlayer.data('rightC'));
+		// 		if(player.data.powerLevel >= 4){
+		// 			bulletsArray.push(bulletsPlayer.data('leftD'));
+		// 			bulletsArray.push(bulletsPlayer.data('rightD'));
+		// 			if(player.data.powerLevel >= 5){
+		// 				bulletsArray.push(bulletsPlayer.data('leftE'));
+		// 				bulletsArray.push(bulletsPlayer.data('rightE'));
+		// 			} 
+		// 		} 
+		// 	} 
+		// }
 		bulletsArray.forEach(bullet => {
 			bulletsPlayer.dump[bullet.id] = bullet;
 		});
-		spawnSound.bulletPlayer()
+		spawnSound.bulletPlayer();
 	},
 
 	update(){
-		if(player.data.shooting && !gameOver){
-			if(player.data.shotClock % player.data.shotTime == 0 || player.data.shotClock % player.data.shotTime == 5 ||
-				player.data.shotClock % player.data.shotTime == 10) bulletsPlayer.spawn();
-			player.data.shotClock++;
-		} else if(player.data.shotClock) player.data.shotClock = 0;
 
 		const doBullet = bullet => {
 			let ySpeed = bullet.speed.y;
@@ -2184,16 +2198,52 @@ const bulletsPlayer = {
 			if(bullet.type) doTypes();
 			else bullet.position.y -= ySpeed;
 			if(bullet.position.y < 0 - bullet.size.y) delete bulletsPlayer.dump[id];
+		},
+
+		doFocus = () => {
+			if(!player.data.focus){
+				player.data.focusData = {height: 0};
+				player.data.focus = true;
+			}
+			player.data.focusData.x = player.data.position.x;
+			player.data.focusData.width = 6;
+			if(player.data.focusData.height < player.data.focusMax) player.data.focusData.height += player.data.focusGrow;
+			player.data.focusData.y = player.data.position.y - player.data.focusData.height - 4;
+			player.data.focusData.x += player.data.size.x / 2 - player.data.focusData.width / 2;
+			if(player.data.moving.left) player.data.focusData.x -= player.data.moveOffset;
+			else if(player.data.moving.right) player.data.focusData.x += player.data.moveOffset;
+		};
+
+		if(player.data.shooting && !gameOver){
+			if(player.data.shotClock < player.data.shotLimit && player.data.shotClock % player.data.shotTime == 0) bulletsPlayer.spawn();
+			else if(player.data.shotClock >= player.data.shotLimit) doFocus();
+			player.data.shotClock++;
+		} else if(player.data.shotClock){
+			player.data.shotClock = 0;
+			player.data.focus = false;
 		}
 
 		if(Object.keys(bulletsPlayer.dump).length) for(id in bulletsPlayer.dump) doBullet(bulletsPlayer.dump[id]);
 	},
 
 	draw(){
+
 		const doBullet = bullet => {
 			drawImg(img.playerBullet, bullet.position.x, bullet.position.y, bullet.size.x, bullet.size.y);
-		}
+		},
+
+		doFocus = () => {
+			drawRect(player.data.focusData.x, player.data.focusData.y,
+				player.data.focusData.width, player.data.focusData.height, colors.red);
+			drawRect(player.data.focusData.x + 1, player.data.focusData.y,
+				player.data.focusData.width - 2, player.data.focusData.height, colors.peach);
+			drawRect(player.data.focusData.x + 1, player.data.focusData.y + player.data.focusData.height,
+				player.data.focusData.width - 2, 1, colors.red);
+		};
+
 		if(Object.keys(bulletsPlayer.dump).length) for(id in bulletsPlayer.dump) doBullet(bulletsPlayer.dump[id]);
+		if(player.data.focus) doFocus();
+
 	}
 
 };
@@ -2207,9 +2257,13 @@ const player = {
 		moving: {up: false, down: false, left: false, right: false},
 		shooting: false,
 		shotClock: 0,
-		shotTime: 20,
+		shotTime: 4,
+		shotLimit: 8,
 		slowHeight: 0,
 		focus: false,
+		focusData: {},
+		focusMax: 0,
+		focusGrow: 18,
 		speed: 3,
 		speedSlow: 1,
 		powerClock: 0,
@@ -2217,6 +2271,7 @@ const player = {
 		powerLevel: 1,
 		gameOverTime: false,
 		gameOverLimit: 60 * 10,
+		moveOffset: 1,
 		lives: 3
 	},
 
@@ -2237,6 +2292,8 @@ const player = {
 			player.data.powerClock--;
 		}
 
+		player.data.focusMax = gameHeight - (gameHeight - player.data.position.y) - 4;
+
 		if(gameOver) {
 			player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid};
 			if(!player.data.gameOverTime) player.data.gameOverTime = gameClock;
@@ -2250,8 +2307,8 @@ const player = {
 		} else {
 			const focus = () => {
 				let focusX = player.data.position.x + player.data.size.x / 2 - 3;
-				if(player.data.moving.left) focusX -= 3;
-				else if(player.data.moving.right) focusX += 3;
+				if(player.data.moving.left) focusX -= player.data.moveOffset;
+				else if(player.data.moving.right) focusX += player.data.moveOffset;
 				drawImg(img.focus, focusX, player.data.position.y + 12);
 			}, yinYangs = ()=> {
 				const yinYangSize = 16, yinYangTime = 60, xOffset = 3;

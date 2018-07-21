@@ -24,8 +24,7 @@ const collisions = {
 		}
 	},
 
-	playerObj(){
-		return {x: player.data.position.x, y: player.data.position.y, width: player.data.size.x, height: player.data.size.y};
+	playerObj(){ return {x: player.data.position.x, y: player.data.position.y, width: player.data.size.x, height: player.data.size.y};
 	},
 
 	setup(){
@@ -135,6 +134,24 @@ const collisions = {
 			}
 		},
 
+		checkFocusWithEnemies = () => {
+			for(id in enemies.dump){
+				enemy = enemies.dump[id];
+				if(enemy.position.x + enemy.size.x >= player.data.focusData.x &&
+					enemy.position.x <= player.data.focusData.x + player.data.focusData.width &&
+					enemy.position.y + enemy.size.y >= player.data.focusData.y &&
+					player.data.shotClock % player.data.shotTime == 0){
+					player.data.focusData.height -= enemy.position.y + enemy.size.y;
+					enemy.health -= 1;
+					if(bossData) bossData.life -=1;
+					const enemyObj = {x: enemy.position.x, y: enemy.position.y, width: enemy.size.x, height: enemy.size.y};
+					const focusObj = {x: player.data.focusData.x - 12, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
+					explosions.spawn(focusObj, enemyObj);
+				}
+
+			}
+		},
+
 		getDrops = () => {
 			const playerObj = {x: player.data.position.x, y: player.data.position.y, width: player.data.size.x, height: player.data.size.y};
 			collisions.check(collisions.dropPartitions, playerObj, () => {
@@ -155,6 +172,7 @@ const collisions = {
 			if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
 			if(Object.keys(enemies.dump).length && Object.keys(bulletsPlayer.dump).length) checkBulletsWithEnemies();
 			if(Object.keys(drop.dump).length) getDrops();
+			if(player.data.focus && player.data.shooting) checkFocusWithEnemies();
 		}
 	},
 

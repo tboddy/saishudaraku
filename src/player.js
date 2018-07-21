@@ -8,9 +8,13 @@ const player = {
 		moving: {up: false, down: false, left: false, right: false},
 		shooting: false,
 		shotClock: 0,
-		shotTime: 20,
+		shotTime: 4,
+		shotLimit: 8,
 		slowHeight: 0,
 		focus: false,
+		focusData: {},
+		focusMax: 0,
+		focusGrow: 18,
 		speed: 3,
 		speedSlow: 1,
 		powerClock: 0,
@@ -18,6 +22,7 @@ const player = {
 		powerLevel: 1,
 		gameOverTime: false,
 		gameOverLimit: 60 * 10,
+		moveOffset: 1,
 		lives: 3
 	},
 
@@ -38,6 +43,8 @@ const player = {
 			player.data.powerClock--;
 		}
 
+		player.data.focusMax = gameHeight - (gameHeight - player.data.position.y) - 4;
+
 		if(gameOver) {
 			player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid};
 			if(!player.data.gameOverTime) player.data.gameOverTime = gameClock;
@@ -51,8 +58,8 @@ const player = {
 		} else {
 			const focus = () => {
 				let focusX = player.data.position.x + player.data.size.x / 2 - 3;
-				if(player.data.moving.left) focusX -= 3;
-				else if(player.data.moving.right) focusX += 3;
+				if(player.data.moving.left) focusX -= player.data.moveOffset;
+				else if(player.data.moving.right) focusX += player.data.moveOffset;
 				drawImg(img.focus, focusX, player.data.position.y + 12);
 			}, yinYangs = ()=> {
 				const yinYangSize = 16, yinYangTime = 60, xOffset = 3;
