@@ -12,7 +12,7 @@ const player = {
 		shotLimit: 8,
 		slowHeight: 0,
 		focus: false,
-		focusData: {},
+		focusData: false,
 		focusMax: 0,
 		focusGrow: 18,
 		speed: 3,
@@ -27,6 +27,7 @@ const player = {
 	},
 
 	update(){
+
 		var speed = player.data.focus ? player.data.speedSlow : player.data.speed;
 		if(player.data.moving.left) player.data.position.x -= speed;
 		else if(player.data.moving.right) player.data.position.x += speed;
@@ -50,6 +51,7 @@ const player = {
 			if(!player.data.gameOverTime) player.data.gameOverTime = gameClock;
 			if(gameClock == player.data.gameOverTime + player.data.gameOverLimit) location.reload();
 		}
+
 	},
 
 	draw(){
@@ -75,8 +77,7 @@ const player = {
 			else if(player.data.moving.right) xOffset = player.data.size.x * 2
 			context.drawImage(img.player, xOffset, 0, 28, 42, player.data.position.x, player.data.position.y, player.data.size.x, player.data.size.y);
 			yinYangs();
-			// if(player.data.focus)
-			focus();
+			if(player.data.focus) focus();
 		}
 	}
 

@@ -23,7 +23,7 @@ mapControls = () => {
 				case 37: player.data.moving.left = true; break;
 				case 39: player.data.moving.right = true; break;
 				case 90: player.data.shooting = true; break;
-				// case 88: player.data.focus = true; break;
+				case 88: player.data.focus = true; break;
 			}
 		}
 	}, keysUp = e => {
@@ -46,7 +46,7 @@ mapControls = () => {
 				case 37: player.data.moving.left = false; break;
 				case 39: player.data.moving.right = false; break;
 				case 90: player.data.shooting = false; break;
-				// case 88: player.data.focus = false; break;
+				case 88: player.data.focus = false; break;
 				case 70: toggleFullscreen(); break;
 				case 82: location.reload(); break;
 			}

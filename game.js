@@ -297,7 +297,7 @@ mapControls = () => {
 				case 37: player.data.moving.left = true; break;
 				case 39: player.data.moving.right = true; break;
 				case 90: player.data.shooting = true; break;
-				// case 88: player.data.focus = true; break;
+				case 88: player.data.focus = true; break;
 			}
 		}
 	}, keysUp = e => {
@@ -320,7 +320,7 @@ mapControls = () => {
 				case 37: player.data.moving.left = false; break;
 				case 39: player.data.moving.right = false; break;
 				case 90: player.data.shooting = false; break;
-				// case 88: player.data.focus = false; break;
+				case 88: player.data.focus = false; break;
 				case 70: toggleFullscreen(); break;
 				case 82: location.reload(); break;
 			}
@@ -2201,7 +2201,7 @@ const bulletsPlayer = {
 		},
 
 		doFocus = () => {
-			if(!player.data.focus){
+			if(!player.data.focusData){
 				player.data.focusData = {height: 0};
 				player.data.focus = true;
 			}
@@ -2215,12 +2215,12 @@ const bulletsPlayer = {
 		};
 
 		if(player.data.shooting && !gameOver){
-			if(player.data.shotClock < player.data.shotLimit && player.data.shotClock % player.data.shotTime == 0) bulletsPlayer.spawn();
-			else if(player.data.shotClock >= player.data.shotLimit) doFocus();
+			if(player.data.focus) doFocus();
+			else if(player.data.shotClock % player.data.shotTime == 0) bulletsPlayer.spawn();
 			player.data.shotClock++;
-		} else if(player.data.shotClock){
-			player.data.shotClock = 0;
-			player.data.focus = false;
+		} else {
+			if(player.data.shotClock) player.data.shotClock = 0;
+			if(player.data.focusData) player.data.focusData = false;
 		}
 
 		if(Object.keys(bulletsPlayer.dump).length) for(id in bulletsPlayer.dump) doBullet(bulletsPlayer.dump[id]);
@@ -2261,7 +2261,7 @@ const player = {
 		shotLimit: 8,
 		slowHeight: 0,
 		focus: false,
-		focusData: {},
+		focusData: false,
 		focusMax: 0,
 		focusGrow: 18,
 		speed: 3,
@@ -2276,6 +2276,7 @@ const player = {
 	},
 
 	update(){
+
 		var speed = player.data.focus ? player.data.speedSlow : player.data.speed;
 		if(player.data.moving.left) player.data.position.x -= speed;
 		else if(player.data.moving.right) player.data.position.x += speed;
@@ -2299,6 +2300,7 @@ const player = {
 			if(!player.data.gameOverTime) player.data.gameOverTime = gameClock;
 			if(gameClock == player.data.gameOverTime + player.data.gameOverLimit) location.reload();
 		}
+
 	},
 
 	draw(){
@@ -2324,8 +2326,7 @@ const player = {
 			else if(player.data.moving.right) xOffset = player.data.size.x * 2
 			context.drawImage(img.player, xOffset, 0, 28, 42, player.data.position.x, player.data.position.y, player.data.size.x, player.data.size.y);
 			yinYangs();
-			// if(player.data.focus)
-			focus();
+			if(player.data.focus) focus();
 		}
 	}
 

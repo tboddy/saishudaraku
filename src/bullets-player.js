@@ -144,7 +144,7 @@ const bulletsPlayer = {
 		},
 
 		doFocus = () => {
-			if(!player.data.focus){
+			if(!player.data.focusData){
 				player.data.focusData = {height: 0};
 				player.data.focus = true;
 			}
@@ -158,12 +158,12 @@ const bulletsPlayer = {
 		};
 
 		if(player.data.shooting && !gameOver){
-			if(player.data.shotClock < player.data.shotLimit && player.data.shotClock % player.data.shotTime == 0) bulletsPlayer.spawn();
-			else if(player.data.shotClock >= player.data.shotLimit) doFocus();
+			if(player.data.focus) doFocus();
+			else if(player.data.shotClock % player.data.shotTime == 0) bulletsPlayer.spawn();
 			player.data.shotClock++;
-		} else if(player.data.shotClock){
-			player.data.shotClock = 0;
-			player.data.focus = false;
+		} else {
+			if(player.data.shotClock) player.data.shotClock = 0;
+			if(player.data.focusData) player.data.focusData = false;
 		}
 
 		if(Object.keys(bulletsPlayer.dump).length) for(id in bulletsPlayer.dump) doBullet(bulletsPlayer.dump[id]);
