@@ -13,9 +13,9 @@ const toggleFullscreen = () => {
 mapControls = () => {
 	const keysDown = e => {
 		if(starting){
-			switch(e.which){ }
+			// switch(e.which){}
 		} else if(gameOver){
-			switch(e.which){ }
+			// switch(e.which){}
 		} else {
 			switch(e.which){
 				case 38: player.data.moving.up = true; break;
@@ -34,10 +34,13 @@ mapControls = () => {
 				case 82: location.reload(); break;
 			}
 		} else if(gameOver){
-			switch(e.which){
-				case 70: toggleFullscreen(); break;
-				case 82: location.reload(); break;
-				case 90: location.reload(); break;
+			if(player.data.shooting) player.data.shooting = false;
+			else {
+				switch(e.which){
+					case 70: toggleFullscreen(); break;
+					case 82: location.reload(); break;
+					case 90: location.reload(); break;
+				}
 			}
 		} else {
 			switch(e.which){

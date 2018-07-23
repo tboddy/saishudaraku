@@ -111,9 +111,11 @@ const collisions = {
 				spawnSound.graze();
 			}
 			if(hitPlayer){
-				player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid},
-				player.data.powerLevel = 1;
-				player.data.powerClock = 0;
+				player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid};
+				if(player.data.powerLevel <= 50) player.data.powerLevel = 0;
+				else if(player.data.powerLevel >= 50 && player.data.powerLevel < 75) player.data.powerLevel = 25;
+				else if(player.data.powerLevel >= 75 && player.data.powerLevel < 100) player.data.powerLevel = 50;
+				else if(player.data.powerLevel == 100) player.data.powerLevel = 75;
 				bulletsEnemies.dump = {};
 				player.data.lives -= 1;
 				if(!player.data.lives) gameOver = true;
@@ -194,7 +196,7 @@ const collisions = {
 		};
 
 		if(!gameOver){
-			// if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
+			if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
 			if(Object.keys(enemies.dump).length && Object.keys(bulletsPlayer.dump).length) checkBulletsWithEnemies();
 			if(Object.keys(drop.dump).length) getDrops();
 			if(player.data.focus && player.data.shooting) checkFocusWithEnemies();

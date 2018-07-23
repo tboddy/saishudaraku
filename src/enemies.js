@@ -561,6 +561,7 @@ const enemies = {
 					else if(enemy.clock % enemy.bobInterval == enemy.bobInterval / 2) enemy.position.y--;
 					enemy.clock++;
 					if(enemy.health <= 0){
+						finishedGame = true;
 						gameOver = true;
 						currentWave = false;
 					}

@@ -20,16 +20,17 @@ const start = {
 			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), scoreY);
 		}, instructions = () => {
 			const strs = [
-				'z: shot',
-				'x: focus',
-				'R: Restart',
-				'F: Fullscreen'
+				'stick: move 8 directions',
+				'pad a: shot',
+				'pad b: focus',
+				'start: Restart'
+				// 'F: Fullscreen'
 			], y = gameHeight / 2 + grid * 2 - 4;
 			strs.forEach((str, i) => {
 				utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y + grid * i);
 			});
 		}, credit = () => {
-			const str = '2018 t.b. & f.m.'.toUpperCase(), y = gameHeight - grid * 2 - 14;
+			const str = '2018 peace research'.toUpperCase(), y = gameHeight - grid * 2 - 14;
 			utilities.drawString(str, utilities.centerTextX(str), y, true);
 		};
 
@@ -38,7 +39,7 @@ const start = {
 		prompt();
 		instructions();
 		credit();
-		if(highScore > 0) score();
+		score();
 		
 	}
 
