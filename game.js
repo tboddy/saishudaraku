@@ -183,7 +183,7 @@ utilities = {
 				case ',': charLeft = size * 12; break;
 				case '-': charLeft = size * 12; break;
 				case '.': charLeft = size * 13; break;
-				case '/': charLeft = size * 15; break;
+				case '/': charLeft = size * 14; break;
 				case '0': charLeft = size * 15; break;
 				case '1': charLeft = size * 16; break;
 				case '2': charLeft = size * 17; break;
@@ -506,8 +506,8 @@ const start = {
 		}, instructions = () => {
 			const strs = [
 				'stick: move 8 directions',
-				'pad a: shot',
-				'pad b: focus',
+				'pad a/x: shot',
+				'pad b/y: focus',
 				'start: Restart'
 				// 'F: Fullscreen'
 			], y = grid * 11;

@@ -21,8 +21,8 @@ const start = {
 		}, instructions = () => {
 			const strs = [
 				'stick: move 8 directions',
-				'pad a: shot',
-				'pad b: focus',
+				'pad a/x: shot',
+				'pad b/y: focus',
 				'start: Restart'
 				// 'F: Fullscreen'
 			], y = grid * 11;
