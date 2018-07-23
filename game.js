@@ -819,7 +819,7 @@ const enemies = {
 				finished: false,
 				angle: 0,
 				clock: 0,
-				health: 3,
+				health: 4,
 				speedMod: 0.025,
 				score: 1500
 			};
@@ -854,7 +854,7 @@ const enemies = {
 				speed: 3.25,
 				speedMod: 0.04,
 				clock: 0,
-				health: 12,
+				health: 16,
 				finished: false,
 				sprayAngle: 0,
 				score: 5500
@@ -895,7 +895,7 @@ const enemies = {
 				clock: 0,
 				speed: 3.25,
 				speedMod: 0.07,
-				health: 6,
+				health: 8,
 				speedOffset: .3,
 				shotInterval: 90,
 				sprayAngle: Math.random() * Math.PI,
@@ -940,7 +940,7 @@ const enemies = {
 				size: {x: 26, y: 26},
 				image: img.enemyPulse,
 				clock: 0,
-				health: 14,
+				health: 16,
 				speedOffset: 2,
 				shotInterval: 12,
 				score: 5000
@@ -1010,7 +1010,7 @@ const enemies = {
 				size: {x: 18, y: 26},
 				image: img.enemyGirlOne,
 				speed: 1.5,
-				health: 5,
+				health: 8,
 				position: {x: pos.x, y: pos.y},
 				shotInterval: 45,
 				sprayAngle: 0,
