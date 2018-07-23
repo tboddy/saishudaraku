@@ -16,7 +16,7 @@ const drop = {
 			id: randomId(),
 			size: {x: pointSize, y: pointSize},
 			position: position,
-			speed: {y: 2.25, x: 0},
+			speed: {y: 2.5, x: 0},
 			pullSpeed: 2.25,
 			pullSpeedDiff: 0.5,
 			speedDiff: -0.015,

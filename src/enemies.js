@@ -238,7 +238,7 @@ const enemies = {
 			const id = randomId();
 			const enemyObj = {
 				id: id,
-				health: 250,
+				health: 220,
 				size: {x: 26, y: 60},
 				frames: true,
 				moving: {left: false, right: true},
@@ -468,7 +468,7 @@ const enemies = {
 			const id = randomId();
 			const enemyObj = {
 				id: id,
-				health: 400,
+				health: 360,
 				size: {x: 30, y: 62},
 				frames: true,
 				moving: {left: false, right: true},

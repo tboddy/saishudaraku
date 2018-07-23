@@ -112,10 +112,8 @@ const collisions = {
 			}
 			if(hitPlayer){
 				player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid};
-				if(player.data.powerLevel <= 50) player.data.powerLevel = 0;
-				else if(player.data.powerLevel >= 50 && player.data.powerLevel < 75) player.data.powerLevel = 25;
-				else if(player.data.powerLevel >= 75 && player.data.powerLevel < 100) player.data.powerLevel = 50;
-				else if(player.data.powerLevel == 100) player.data.powerLevel = 75;
+				player.data.powerLevel -= 25;
+				if(player.data.powerLevel < 0) player.data.powerLevel = 0;
 				bulletsEnemies.dump = {};
 				player.data.lives -= 1;
 				if(!player.data.lives) gameOver = true;

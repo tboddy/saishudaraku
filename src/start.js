@@ -9,15 +9,15 @@ const start = {
 	draw(){
 
 		const logo = () => {
-			const x = gameWidth / 2 - 192 / 2, y = grid * 2;
+			const x = gameWidth / 2 - 192 / 2, y = grid * 1.5;
 			drawImg(img.startLogo, x, y);
 		}, prompt = () => {
-			const str = 'press shot', y = grid * 7 + 4;
+			const str = 'press shot', y = grid * 7;
 			utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y, true);
 		}, score = () => {
-			const str = 'Current High Score', y = gameHeight / 2 - 12 - 8, scoreStr = chrome.processScore(highScore), scoreY = y + 16;
+			const str = 'Current High Score', y = grid * 8.5, scoreStr = chrome.processScore(highScore);
 			utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y);
-			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), scoreY);
+			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), y + grid);
 		}, instructions = () => {
 			const strs = [
 				'stick: move 8 directions',
@@ -25,13 +25,15 @@ const start = {
 				'pad b: focus',
 				'start: Restart'
 				// 'F: Fullscreen'
-			], y = gameHeight / 2 + grid * 2 - 4;
+			], y = grid * 11;
 			strs.forEach((str, i) => {
 				utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y + grid * i);
 			});
 		}, credit = () => {
-			const str = '2018 peace research'.toUpperCase(), y = gameHeight - grid * 2 - 14;
+			const str = '2018 peace research'.toUpperCase(), y = gameHeight - grid * 3.5,
+				verStr = 'build 18.7.23-FUCN'.toUpperCase();
 			utilities.drawString(str, utilities.centerTextX(str), y, true);
+			utilities.drawString(verStr, utilities.centerTextX(verStr), y + grid, true);
 		};
 
 		drawImg(img.start, 0, 0);
