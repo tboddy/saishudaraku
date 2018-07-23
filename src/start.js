@@ -29,7 +29,7 @@ const start = {
 				utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y + grid * i);
 			});
 		}, credit = () => {
-			const str = '2018 PEACE RESEARCH', y = gameHeight - grid * 2 - 14;
+			const str = '2018 t.b. & f.m.'.toUpperCase(), y = gameHeight - grid * 2 - 14;
 			utilities.drawString(str, utilities.centerTextX(str), y, true);
 		};
 

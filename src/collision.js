@@ -1,7 +1,7 @@
 const collisions = {
 
 	dump: [],
-	size: 16,
+	size: 32,
 	playerPartitions: [],
 	playerShotPartitions: [],
 	dropPartitions: [],
@@ -140,7 +140,7 @@ const collisions = {
 		},
 
 		checkFocusWithEnemies = () => {
-			const healthMultiplier = 2;
+			const healthMultiplier = 3;
 			for(id in enemies.dump){
 				enemy = enemies.dump[id];
 				if(enemy.position.x + enemy.size.x >= player.data.focusData.x &&

@@ -18,7 +18,7 @@ const player = {
 		speed: 3,
 		speedSlow: 1,
 		powerInterval: 140,
-		powerLevel: 1,
+		powerLevel: 0,
 		gameOverTime: false,
 		gameOverLimit: 60 * 10,
 		moveOffset: 1,
