@@ -50,14 +50,22 @@ const chrome = {
 			utilities.drawString(highStr, utilities.centerTextX(highStr), 4, true);
 			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), 18);
 		}, boss = () => {
-			const lifeWidth = grid * 4;
-			let lifeNum = bossData.life / 100;
-			if(bossData.name == 'merlin') lifeNum = lifeNum / 3 * 2;
-			const lifeTotal = Math.round(lifeWidth * lifeNum);
-			const yOffset = grid + 3, lifeHeight = 7;
-			const y = 22, height = 9;
-			drawRect(gameWidth - 8 - lifeTotal, y, lifeTotal, height, colors.red)
-			drawRect(gameWidth - 8 - lifeTotal, y + height, lifeTotal, 1, colors.dark)
+			const height = 9, width = grid * 4, y = 22,
+			lifeNum = Math.round(width * (bossData.life / bossData.lifeMax));
+			const x = gameWidth - 8 - width;
+			drawRect(x, y, width, height, colors.purple)
+			drawRect(x + (width - lifeNum), y, lifeNum, height, colors.red)
+			drawRect(x, y + height, width, 1, colors.dark)
+
+			// const lifeWidth = grid * 4;
+			// const lifeNum = bossData.life / lifeWidth * 10
+			// console.log(lifeNum)
+			// // if(bossData.name == 'merlin') lifeNum = lifeNum / 3 * 2;
+			// const lifeTotal = Math.round(lifeNum);
+			// const yOffset = grid + 3, lifeHeight = 7;
+			// const y = 22, height = 9;
+			// drawRect(gameWidth - 8 - lifeTotal, y, lifeTotal, height, colors.red)
+			// drawRect(gameWidth - 8 - lifeTotal, y + height, lifeTotal, 1, colors.dark)
 		}, time = () => {
 			if(!timeString) timeString = '0:00:00';
 			utilities.drawString(timeString, gameWidth - grid * 3.5 - 8, 4)

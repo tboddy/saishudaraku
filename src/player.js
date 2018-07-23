@@ -19,6 +19,7 @@ const player = {
 		speedSlow: 1,
 		powerInterval: 140,
 		powerLevel: 0,
+		powerDiff: 3,
 		gameOverTime: false,
 		gameOverLimit: 60 * 10,
 		moveOffset: 1,
@@ -49,9 +50,7 @@ const player = {
 	},
 
 	draw(){
-		if(gameOver){
-
-		} else {
+		if(!gameOver){
 			const focus = () => {
 				let focusX = player.data.position.x + player.data.size.x / 2 - 3;
 				if(player.data.moving.left) focusX -= player.data.moveOffset;

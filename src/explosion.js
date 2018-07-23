@@ -1,7 +1,7 @@
 const explosions = {
 
 	dump: [],
-	interval: 5,
+	interval: 4,
 	spawnTime: 12,
 	spawnClock: 0,
 

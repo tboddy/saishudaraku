@@ -238,7 +238,7 @@ const enemies = {
 			const id = randomId();
 			const enemyObj = {
 				id: id,
-				health: 100,
+				health: 250,
 				size: {x: 26, y: 60},
 				frames: true,
 				moving: {left: false, right: true},
@@ -265,7 +265,8 @@ const enemies = {
 			enemyObj.position = {x: grid * 2, y: -enemyObj.size.y};
 			bossData = {
 				name: 'lunasa',
-				life: enemyObj.health
+				life: enemyObj.health,
+				lifeMax: enemyObj.health
 			};
 			const spineAngle = function(enemy){
 				enemy.spine.position = {
@@ -355,7 +356,7 @@ const enemies = {
 			const id = randomId();
 			const enemyObj = {
 				id: id,
-				health: 100,
+				health: 250,
 				size: {x: 32, y: 60},
 				frames: true,
 				moving: {left: false, right: true},
@@ -378,7 +379,8 @@ const enemies = {
 			enemyObj.position = {x: grid * 2, y: -enemyObj.size.y};
 			bossData = {
 				name: 'lyrica',
-				life: enemyObj.health
+				life: enemyObj.health,
+				lifeMax: enemyObj.health
 			};
 			enemyObj.update = () => {
 				const enemy = enemies.dump[id], moveLeft = function(){
@@ -466,7 +468,7 @@ const enemies = {
 			const id = randomId();
 			const enemyObj = {
 				id: id,
-				health: 150,
+				health: 400,
 				size: {x: 30, y: 62},
 				frames: true,
 				moving: {left: false, right: true},
@@ -493,7 +495,8 @@ const enemies = {
 			enemyObj.position = {x: gameWidth / 2 - enemyObj.size.x, y: -enemyObj.size.y};
 			bossData = {
 				name: 'merlin',
-				life: enemyObj.health
+				life: enemyObj.health,
+				lifeMax: enemyObj.health
 			};
 			enemyObj.update = () => {
 				const enemy = enemies.dump[id], spawns = {
@@ -655,10 +658,6 @@ const enemies = {
 		enemies.dump[enemy.id] = enemy;
 	},
 
-	spawnDrops(enemy){
-		drop.spawnPoints(enemy);
-	},
-
 	update(){
 		if(Object.keys(enemies.dump).length){
 			for(id in enemies.dump){
@@ -668,7 +667,7 @@ const enemies = {
 					enemy.position.x + enemy.size.x < -enemy.size.x || enemy.position.x > gameWidth) delete enemies.dump[id];
 				if(enemy.health < 1){
 					currentScore += enemy.score;
-					enemies.spawnDrops(enemy);
+					drop.spawn(enemy);
 					delete enemies.dump[id];
 				}
 			}

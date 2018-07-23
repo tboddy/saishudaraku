@@ -22,6 +22,7 @@ addImage('yinYang', 'yinyang');
 addImage('focus', 'focus');
 addImage('power', 'power');
 addImage('dropPoint', 'drop-point');
+addImage('dropPower', 'drop-power');
 addImage('playerlife', 'playerlife');
 addImage('startLogo', 'startlogo');
 addImage('start', 'start');
@@ -382,14 +383,22 @@ const chrome = {
 			utilities.drawString(highStr, utilities.centerTextX(highStr), 4, true);
 			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), 18);
 		}, boss = () => {
-			const lifeWidth = grid * 4;
-			let lifeNum = bossData.life / 100;
-			if(bossData.name == 'merlin') lifeNum = lifeNum / 3 * 2;
-			const lifeTotal = Math.round(lifeWidth * lifeNum);
-			const yOffset = grid + 3, lifeHeight = 7;
-			const y = 22, height = 9;
-			drawRect(gameWidth - 8 - lifeTotal, y, lifeTotal, height, colors.red)
-			drawRect(gameWidth - 8 - lifeTotal, y + height, lifeTotal, 1, colors.dark)
+			const height = 9, width = grid * 4, y = 22,
+			lifeNum = Math.round(width * (bossData.life / bossData.lifeMax));
+			const x = gameWidth - 8 - width;
+			drawRect(x, y, width, height, colors.purple)
+			drawRect(x + (width - lifeNum), y, lifeNum, height, colors.red)
+			drawRect(x, y + height, width, 1, colors.dark)
+
+			// const lifeWidth = grid * 4;
+			// const lifeNum = bossData.life / lifeWidth * 10
+			// console.log(lifeNum)
+			// // if(bossData.name == 'merlin') lifeNum = lifeNum / 3 * 2;
+			// const lifeTotal = Math.round(lifeNum);
+			// const yOffset = grid + 3, lifeHeight = 7;
+			// const y = 22, height = 9;
+			// drawRect(gameWidth - 8 - lifeTotal, y, lifeTotal, height, colors.red)
+			// drawRect(gameWidth - 8 - lifeTotal, y + height, lifeTotal, 1, colors.dark)
 		}, time = () => {
 			if(!timeString) timeString = '0:00:00';
 			utilities.drawString(timeString, gameWidth - grid * 3.5 - 8, 4)
@@ -424,7 +433,7 @@ const chrome = {
 const explosions = {
 
 	dump: [],
-	interval: 5,
+	interval: 4,
 	spawnTime: 12,
 	spawnClock: 0,
 
@@ -533,7 +542,7 @@ const collisions = {
 		let leftX = element.x - collisions.size, rightX = element.x + element.width,
 			topY = element.y - collisions.size, bottomY = element.y + element.height;
 		if(isDrop){
-			const sizeMod = 64;
+			const sizeMod = 128;
 			leftX -= sizeMod;
 			rightX += sizeMod;
 			topY -= sizeMod;
@@ -663,20 +672,15 @@ const collisions = {
 		},
 
 		checkFocusWithEnemies = () => {
-			const healthMultiplier = 3;
+			const healthMultiplier = 1.5;
 			for(id in enemies.dump){
 				enemy = enemies.dump[id];
 				if(enemy.position.x + enemy.size.x >= player.data.focusData.x &&
 					enemy.position.x <= player.data.focusData.x + player.data.focusData.width &&
 					enemy.position.y + enemy.size.y >= player.data.focusData.y &&
 					player.data.shotClock % player.data.shotTime == 0){
-					if(player.data.focusData.y <= 0){
-						player.data.focusData.height = gameHeight - enemy.position.y - enemy.size.y - player.data.position.y - 24;
-						player.data.focusData.y = enemy.position.y + enemy.size.y;
-					}
 					enemy.health -= 1 * healthMultiplier;
 					if(bossData) bossData.life -= 1 * healthMultiplier;
-
 					const enemyObj = {x: enemy.position.x, y: enemy.position.y, width: enemy.size.x, height: enemy.size.y};
 					const focusObj = {x: player.data.focusData.x - 12, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
 					explosions.spawn(focusObj, enemyObj);
@@ -687,28 +691,38 @@ const collisions = {
 
 		getDrops = () => {
 			const playerObj = {x: player.data.position.x, y: player.data.position.y, width: player.data.size.x, height: player.data.size.y};
-			collisions.check(collisions.dropPartitions, playerObj, () => {
-				for(id in drop.dump){
-					const dropItem = drop.dump[id];
-					const pullObj = {
-						x: dropItem.position.x + dropItem.size.x / 4,
-						y: dropItem.position.y + dropItem.size.y / 4,
-						width: dropItem.size.x * 4,
-						height: dropItem.size.y * 4
-					};
-					checkCollision(pullObj, playerObj, () => {
-						dropItem.pullAngle = getAngle(dropItem, player.data);
-						dropItem.speed.x = dropItem.pullSpeed * -Math.cos(dropItem.pullAngle);
-						dropItem.speed.y = dropItem.pullSpeed * -Math.sin(dropItem.pullAngle);
-						dropItem.pullSpeed += dropItem.pullSpeedDiff;
-						const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
-						checkCollision(dropObj, playerObj, () => {
-							if(dropItem.value) currentScore += dropItem.value;
-							delete drop.dump[id];
+			pullDrop = dropItem => {
+				dropItem.pullAngle = getAngle(dropItem, player.data);
+				dropItem.speed.x = dropItem.pullSpeed * -Math.cos(dropItem.pullAngle);
+				dropItem.speed.y = dropItem.pullSpeed * -Math.sin(dropItem.pullAngle);
+				dropItem.pullSpeed += dropItem.pullSpeedDiff;
+				const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
+				checkCollision(dropObj, playerObj, () => {
+					if(dropItem.value) currentScore += dropItem.value;
+					else if(player.data.powerLevel < 100){
+						player.data.powerLevel += player.data.powerDiff;
+						if(player.data.powerLevel > 100) player.data.powerLevel = 100;
+					}
+					delete drop.dump[id];
+				});
+			};
+			if(collisions.boundingBox().y <= gameHeight / 4) for(id in drop.dump) pullDrop(drop.dump[id]);
+			else {
+				collisions.check(collisions.dropPartitions, playerObj, () => {
+					for(id in drop.dump){
+						const dropItem = drop.dump[id];
+						const pullObj = {
+							x: dropItem.position.x + dropItem.size.x / 4,
+							y: dropItem.position.y + dropItem.size.y / 4,
+							width: dropItem.size.x * 4,
+							height: dropItem.size.y * 4
+						};
+						checkCollision(pullObj, playerObj, () => {
+							pullDrop(dropItem)
 						});
-					});
-				}
-			});
+					}
+				});
+			}
 		};
 
 		if(!gameOver){
@@ -1022,7 +1036,7 @@ const enemies = {
 			const id = randomId();
 			const enemyObj = {
 				id: id,
-				health: 100,
+				health: 250,
 				size: {x: 26, y: 60},
 				frames: true,
 				moving: {left: false, right: true},
@@ -1049,7 +1063,8 @@ const enemies = {
 			enemyObj.position = {x: grid * 2, y: -enemyObj.size.y};
 			bossData = {
 				name: 'lunasa',
-				life: enemyObj.health
+				life: enemyObj.health,
+				lifeMax: enemyObj.health
 			};
 			const spineAngle = function(enemy){
 				enemy.spine.position = {
@@ -1139,7 +1154,7 @@ const enemies = {
 			const id = randomId();
 			const enemyObj = {
 				id: id,
-				health: 100,
+				health: 250,
 				size: {x: 32, y: 60},
 				frames: true,
 				moving: {left: false, right: true},
@@ -1162,7 +1177,8 @@ const enemies = {
 			enemyObj.position = {x: grid * 2, y: -enemyObj.size.y};
 			bossData = {
 				name: 'lyrica',
-				life: enemyObj.health
+				life: enemyObj.health,
+				lifeMax: enemyObj.health
 			};
 			enemyObj.update = () => {
 				const enemy = enemies.dump[id], moveLeft = function(){
@@ -1250,7 +1266,7 @@ const enemies = {
 			const id = randomId();
 			const enemyObj = {
 				id: id,
-				health: 150,
+				health: 400,
 				size: {x: 30, y: 62},
 				frames: true,
 				moving: {left: false, right: true},
@@ -1277,7 +1293,8 @@ const enemies = {
 			enemyObj.position = {x: gameWidth / 2 - enemyObj.size.x, y: -enemyObj.size.y};
 			bossData = {
 				name: 'merlin',
-				life: enemyObj.health
+				life: enemyObj.health,
+				lifeMax: enemyObj.health
 			};
 			enemyObj.update = () => {
 				const enemy = enemies.dump[id], spawns = {
@@ -1439,10 +1456,6 @@ const enemies = {
 		enemies.dump[enemy.id] = enemy;
 	},
 
-	spawnDrops(enemy){
-		drop.spawnPoints(enemy);
-	},
-
 	update(){
 		if(Object.keys(enemies.dump).length){
 			for(id in enemies.dump){
@@ -1452,7 +1465,7 @@ const enemies = {
 					enemy.position.x + enemy.size.x < -enemy.size.x || enemy.position.x > gameWidth) delete enemies.dump[id];
 				if(enemy.health < 1){
 					currentScore += enemy.score;
-					enemies.spawnDrops(enemy);
+					drop.spawn(enemy);
 					delete enemies.dump[id];
 				}
 			}
@@ -1478,7 +1491,7 @@ const drop = {
 
 	dump: {},
 
-	pointData(enemy){
+	data(enemy, isPower){
 		let limit = 16;
 		const pointSize = 12, position = {
 			x: Math.round(enemy.position.x + enemy.size.x / 2) - pointSize / 2,
@@ -1494,23 +1507,34 @@ const drop = {
 			position: position,
 			speed: {y: 2.25, x: 0},
 			pullSpeed: 2.25,
-			pullSpeedDiff: 0.35,
+			pullSpeedDiff: 0.5,
 			speedDiff: -0.015,
 			speedLimit: 1,
-			img: img.dropPoint,
-			value: 500
+			img: isPower ? img.dropPower : img.dropPoint,
+			value: isPower ? false : 500
 		}
 	},
 
-	spawnPoints(enemy){
-		const dropItems = [];
-		let dropCount = Math.round((gameHeight - (player.data.position.y - (enemy.position.y + enemy.size.y))) / 80);
-		if(!dropCount) dropCount = 1;
-		if(bossData) dropCount = dropCount * 4;
-		for(i = 0; i < dropCount; i++){
-			const dropItem = drop.pointData(enemy);
-			drop.dump[dropItem.id] = dropItem;
-		}
+	spawn(enemy){
+		const points = () => {
+			const dropItems = [];
+			let dropCount = Math.round((gameHeight - (player.data.position.y - (enemy.position.y + enemy.size.y))) / 80);
+			if(!dropCount) dropCount = 1;
+			if(bossData) dropCount = dropCount * 5;
+			for(i = 0; i < dropCount; i++){
+				const dropItem = drop.data(enemy);
+				drop.dump[dropItem.id] = dropItem;
+			}
+		}, power = () => {
+			let powerCount = Math.floor(Math.random() * 2) + 1;
+			if(bossData) powerCount = powerCount * 5;
+			for(i = 0; i < powerCount; i++){
+				const dropItem = drop.data(enemy, player.data.powerLevel < 100);
+				drop.dump[dropItem.id] = dropItem;
+			}
+		};
+		points();
+		power();
 	},
 
 	update(){
@@ -2281,6 +2305,7 @@ const player = {
 		speedSlow: 1,
 		powerInterval: 140,
 		powerLevel: 0,
+		powerDiff: 3,
 		gameOverTime: false,
 		gameOverLimit: 60 * 10,
 		moveOffset: 1,
@@ -2311,9 +2336,7 @@ const player = {
 	},
 
 	draw(){
-		if(gameOver){
-
-		} else {
+		if(!gameOver){
 			const focus = () => {
 				let focusX = player.data.position.x + player.data.size.x / 2 - 3;
 				if(player.data.moving.left) focusX -= player.data.moveOffset;
@@ -2341,10 +2364,10 @@ const player = {
 const updateLoop = () => {
 	background.update();
 	player.update();
+	drop.update();
+	bulletsPlayer.update();
 	bulletsEnemies.update();
 	enemies.update();
-	bulletsPlayer.update();
-	drop.update();
 	explosions.update();
 	chrome.update();
 	collisions.update();
@@ -2353,10 +2376,10 @@ const updateLoop = () => {
 drawLoop = () => {
 	background.draw();
 	player.draw();
+	drop.draw();
+	bulletsPlayer.draw();
 	bulletsEnemies.draw();
 	enemies.draw();
-	bulletsPlayer.draw();
-	drop.draw();
 	explosions.draw();
 	chrome.draw();
 	// collisions.draw();

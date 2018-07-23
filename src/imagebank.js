@@ -22,6 +22,7 @@ addImage('yinYang', 'yinyang');
 addImage('focus', 'focus');
 addImage('power', 'power');
 addImage('dropPoint', 'drop-point');
+addImage('dropPower', 'drop-power');
 addImage('playerlife', 'playerlife');
 addImage('startLogo', 'startlogo');
 addImage('start', 'start');

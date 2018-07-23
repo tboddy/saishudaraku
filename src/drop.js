@@ -2,7 +2,7 @@ const drop = {
 
 	dump: {},
 
-	pointData(enemy){
+	data(enemy, isPower){
 		let limit = 16;
 		const pointSize = 12, position = {
 			x: Math.round(enemy.position.x + enemy.size.x / 2) - pointSize / 2,
@@ -18,23 +18,34 @@ const drop = {
 			position: position,
 			speed: {y: 2.25, x: 0},
 			pullSpeed: 2.25,
-			pullSpeedDiff: 0.35,
+			pullSpeedDiff: 0.5,
 			speedDiff: -0.015,
 			speedLimit: 1,
-			img: img.dropPoint,
-			value: 500
+			img: isPower ? img.dropPower : img.dropPoint,
+			value: isPower ? false : 500
 		}
 	},
 
-	spawnPoints(enemy){
-		const dropItems = [];
-		let dropCount = Math.round((gameHeight - (player.data.position.y - (enemy.position.y + enemy.size.y))) / 80);
-		if(!dropCount) dropCount = 1;
-		if(bossData) dropCount = dropCount * 4;
-		for(i = 0; i < dropCount; i++){
-			const dropItem = drop.pointData(enemy);
-			drop.dump[dropItem.id] = dropItem;
-		}
+	spawn(enemy){
+		const points = () => {
+			const dropItems = [];
+			let dropCount = Math.round((gameHeight - (player.data.position.y - (enemy.position.y + enemy.size.y))) / 80);
+			if(!dropCount) dropCount = 1;
+			if(bossData) dropCount = dropCount * 5;
+			for(i = 0; i < dropCount; i++){
+				const dropItem = drop.data(enemy);
+				drop.dump[dropItem.id] = dropItem;
+			}
+		}, power = () => {
+			let powerCount = Math.floor(Math.random() * 2) + 1;
+			if(bossData) powerCount = powerCount * 5;
+			for(i = 0; i < powerCount; i++){
+				const dropItem = drop.data(enemy, player.data.powerLevel < 100);
+				drop.dump[dropItem.id] = dropItem;
+			}
+		};
+		points();
+		power();
 	},
 
 	update(){

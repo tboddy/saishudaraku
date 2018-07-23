@@ -1,10 +1,10 @@
 const updateLoop = () => {
 	background.update();
 	player.update();
+	drop.update();
+	bulletsPlayer.update();
 	bulletsEnemies.update();
 	enemies.update();
-	bulletsPlayer.update();
-	drop.update();
 	explosions.update();
 	chrome.update();
 	collisions.update();
@@ -13,10 +13,10 @@ const updateLoop = () => {
 drawLoop = () => {
 	background.draw();
 	player.draw();
+	drop.draw();
+	bulletsPlayer.draw();
 	bulletsEnemies.draw();
 	enemies.draw();
-	bulletsPlayer.draw();
-	drop.draw();
 	explosions.draw();
 	chrome.draw();
 	// collisions.draw();
