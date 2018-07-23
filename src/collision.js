@@ -6,13 +6,18 @@ const collisions = {
 	playerShotPartitions: [],
 	dropPartitions: [],
 
-	get(section, element, arr){
-		if(section.x >= element.x - collisions.size &&
-			section.x <= element.x + element.width &&
-			section.y >= element.y - collisions.size &&
-			section.y <= element.y + element.height){
-			if(arr.indexOf(section.id) == -1) arr.push(section.id);
+	get(section, element, arr, isDrop){
+		let leftX = element.x - collisions.size, rightX = element.x + element.width,
+			topY = element.y - collisions.size, bottomY = element.y + element.height;
+		if(isDrop){
+			const sizeMod = 64;
+			leftX -= sizeMod;
+			rightX += sizeMod;
+			topY -= sizeMod;
+			bottomY += sizeMod;
 		}
+		if(section.x >= leftX && section.x <= rightX	&& section.y >= topY && section.y <= bottomY && arr.indexOf(section.id) == -1)
+			arr.push(section.id);
 	},
 
 	boundingBox(){
@@ -73,7 +78,7 @@ const collisions = {
 				for(id in drop.dump){
 					const dropItem = drop.dump[id];
 					const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
-					collisions.get(section, dropObj, collisions.dropPartitions);
+					collisions.get(section, dropObj, collisions.dropPartitions, true);
 				}
 			}
 		});
@@ -135,15 +140,20 @@ const collisions = {
 		},
 
 		checkFocusWithEnemies = () => {
+			const healthMultiplier = 2;
 			for(id in enemies.dump){
 				enemy = enemies.dump[id];
 				if(enemy.position.x + enemy.size.x >= player.data.focusData.x &&
 					enemy.position.x <= player.data.focusData.x + player.data.focusData.width &&
 					enemy.position.y + enemy.size.y >= player.data.focusData.y &&
 					player.data.shotClock % player.data.shotTime == 0){
-					player.data.focusData.height -= enemy.position.y + enemy.size.y;
-					enemy.health -= 1;
-					if(bossData) bossData.life -=1;
+					if(player.data.focusData.y <= 0){
+						player.data.focusData.height = gameHeight - enemy.position.y - enemy.size.y - player.data.position.y - 24;
+						player.data.focusData.y = enemy.position.y + enemy.size.y;
+					}
+					enemy.health -= 1 * healthMultiplier;
+					if(bossData) bossData.life -= 1 * healthMultiplier;
+
 					const enemyObj = {x: enemy.position.x, y: enemy.position.y, width: enemy.size.x, height: enemy.size.y};
 					const focusObj = {x: player.data.focusData.x - 12, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
 					explosions.spawn(focusObj, enemyObj);
@@ -157,19 +167,29 @@ const collisions = {
 			collisions.check(collisions.dropPartitions, playerObj, () => {
 				for(id in drop.dump){
 					const dropItem = drop.dump[id];
-					const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
-					checkCollision(dropObj, playerObj, () => {
-						caughtDrop = true;
-						delete drop.dump[id];
-						player.data.powerLevel = 5;
-						player.data.powerClock = player.data.powerLevel * player.data.powerInterval;
+					const pullObj = {
+						x: dropItem.position.x + dropItem.size.x / 4,
+						y: dropItem.position.y + dropItem.size.y / 4,
+						width: dropItem.size.x * 4,
+						height: dropItem.size.y * 4
+					};
+					checkCollision(pullObj, playerObj, () => {
+						dropItem.pullAngle = getAngle(dropItem, player.data);
+						dropItem.speed.x = dropItem.pullSpeed * -Math.cos(dropItem.pullAngle);
+						dropItem.speed.y = dropItem.pullSpeed * -Math.sin(dropItem.pullAngle);
+						dropItem.pullSpeed += dropItem.pullSpeedDiff;
+						const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
+						checkCollision(dropObj, playerObj, () => {
+							if(dropItem.value) currentScore += dropItem.value;
+							delete drop.dump[id];
+						});
 					});
 				}
 			});
 		};
 
 		if(!gameOver){
-			if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
+			// if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
 			if(Object.keys(enemies.dump).length && Object.keys(bulletsPlayer.dump).length) checkBulletsWithEnemies();
 			if(Object.keys(drop.dump).length) getDrops();
 			if(player.data.focus && player.data.shooting) checkFocusWithEnemies();

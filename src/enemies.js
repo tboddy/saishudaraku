@@ -1,4 +1,4 @@
-let currentWave = 'one', caughtDrop = false;
+let currentWave = 'one';
 
 const enemies = {
 
@@ -61,7 +61,6 @@ const enemies = {
 				score: 5500
 			};
 			enemyObj.position = {x: isRight ? gameWidth - grid * 3 - enemyObj.size.x : grid * 3, y: -enemyObj.size.y};
-			if(!isRight) enemyObj.drop = true;
 			enemyObj.update = () => {
 				const enemy = enemies.dump[id];
 				enemy.position.y += enemy.speed;
@@ -149,7 +148,6 @@ const enemies = {
 			};
 			enemyObj.position = {x: isRight ? gameWidth - enemyObj.size.x - grid : grid, y: -enemyObj.size.y};
 			enemyObj.initPosition = enemyObj.position;
-			if(isRight) enemyObj.drop = true;
 			const angle = getAngle(enemyObj, player.data);
 			enemyObj.speed = {x: -enemyObj.speedOffset * Math.cos(angle), y: -enemyObj.speedOffset * Math.sin(angle)};
 			enemyObj.update = () => {
@@ -220,7 +218,6 @@ const enemies = {
 				clock: 0,
 				score: 3500
 			};
-			if(pos.x == gameWidth && pos.y == grid * 4) enemyObj.drop = true;
 			enemyObj.update = () => {
 				const enemy = enemies.dump[id];
 				enemy.position.x += pos.x > 0 ? -enemy.speed : enemy.speed;
@@ -599,6 +596,7 @@ const enemies = {
 		},
 
 		three(){
+			bulletsEnemies.dump = {};
 			bossData = false;
 			for(i = 0; i < 5; i++) enemies.spawn(enemies.data.three(i));
 			currentWave = 'four';
@@ -614,6 +612,7 @@ const enemies = {
 		},
 
 		five(){
+			bulletsEnemies.dump = {};
 			bossData = false;
 			const timeout = 350;
 			enemies.spawn(enemies.data.five(grid * 2));
@@ -624,12 +623,10 @@ const enemies = {
 		},
 
 		six(){
-			// currentWave = 'one';
 			const timeout = 500;
 			enemies.spawn(enemies.data.six({x: -18, y: grid * 3.5}));
 			setTimeout(() => { enemies.spawn(enemies.data.six({x: -18, y: grid * 4})); }, timeout);
 			setTimeout(() => { enemies.spawn(enemies.data.six({x: -18, y: grid * 4.5})); }, timeout * 2);
-
 			setTimeout(() => { enemies.spawn(enemies.data.six({x: gameWidth, y: grid * 3.5})); }, timeout * 3);
 			setTimeout(() => { enemies.spawn(enemies.data.six({x: gameWidth, y: grid * 4})); }, timeout * 4);
 			setTimeout(() => {
@@ -658,6 +655,10 @@ const enemies = {
 		enemies.dump[enemy.id] = enemy;
 	},
 
+	spawnDrops(enemy){
+		drop.spawnPoints(enemy);
+	},
+
 	update(){
 		if(Object.keys(enemies.dump).length){
 			for(id in enemies.dump){
@@ -667,7 +668,7 @@ const enemies = {
 					enemy.position.x + enemy.size.x < -enemy.size.x || enemy.position.x > gameWidth) delete enemies.dump[id];
 				if(enemy.health < 1){
 					currentScore += enemy.score;
-					if(enemy.drop && !caughtDrop) drop.spawn({ x: enemy.position.x + enemy.size.x / 2, y: enemy.position.y + enemy.size.y / 2});
+					enemies.spawnDrops(enemy);
 					delete enemies.dump[id];
 				}
 			}

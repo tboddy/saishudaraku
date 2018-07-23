@@ -17,7 +17,6 @@ const player = {
 		focusGrow: 18,
 		speed: 3,
 		speedSlow: 1,
-		powerClock: 0,
 		powerInterval: 140,
 		powerLevel: 1,
 		gameOverTime: false,
@@ -38,11 +37,6 @@ const player = {
 		else if(player.data.position.x + player.data.size.x > gameWidth) player.data.position.x = gameWidth - player.data.size.x;
 		if(player.data.position.y < 0) player.data.position.y = 0;
 		else if(player.data.position.y + player.data.size.y > gameHeight) player.data.position.y = gameHeight - player.data.size.y;
-
-		if(player.data.powerClock){
-			if(player.data.powerClock % player.data.powerInterval == 0 && player.data.powerClock != player.data.powerInterval * 5) player.data.powerLevel--;
-			player.data.powerClock--;
-		}
 
 		player.data.focusMax = gameHeight - (gameHeight - player.data.position.y) - 4;
 

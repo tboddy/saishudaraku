@@ -20,8 +20,8 @@ const start = {
 			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), scoreY);
 		}, instructions = () => {
 			const strs = [
-				'z (tap): shot',
-				'z (hold): focus',
+				'z: shot',
+				'x: focus',
 				'R: Restart',
 				'F: Fullscreen'
 			], y = gameHeight / 2 + grid * 2 - 4;

@@ -21,6 +21,7 @@ addImage('font', 'font');
 addImage('yinYang', 'yinyang');
 addImage('focus', 'focus');
 addImage('power', 'power');
+addImage('dropPoint', 'drop-point');
 addImage('playerlife', 'playerlife');
 addImage('startLogo', 'startlogo');
 addImage('start', 'start');
@@ -498,8 +499,8 @@ const start = {
 			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), scoreY);
 		}, instructions = () => {
 			const strs = [
-				'z (tap): shot',
-				'z (hold): focus',
+				'z: shot',
+				'x: focus',
 				'R: Restart',
 				'F: Fullscreen'
 			], y = gameHeight / 2 + grid * 2 - 4;
@@ -529,13 +530,18 @@ const collisions = {
 	playerShotPartitions: [],
 	dropPartitions: [],
 
-	get(section, element, arr){
-		if(section.x >= element.x - collisions.size &&
-			section.x <= element.x + element.width &&
-			section.y >= element.y - collisions.size &&
-			section.y <= element.y + element.height){
-			if(arr.indexOf(section.id) == -1) arr.push(section.id);
+	get(section, element, arr, isDrop){
+		let leftX = element.x - collisions.size, rightX = element.x + element.width,
+			topY = element.y - collisions.size, bottomY = element.y + element.height;
+		if(isDrop){
+			const sizeMod = 64;
+			leftX -= sizeMod;
+			rightX += sizeMod;
+			topY -= sizeMod;
+			bottomY += sizeMod;
 		}
+		if(section.x >= leftX && section.x <= rightX	&& section.y >= topY && section.y <= bottomY && arr.indexOf(section.id) == -1)
+			arr.push(section.id);
 	},
 
 	boundingBox(){
@@ -596,7 +602,7 @@ const collisions = {
 				for(id in drop.dump){
 					const dropItem = drop.dump[id];
 					const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
-					collisions.get(section, dropObj, collisions.dropPartitions);
+					collisions.get(section, dropObj, collisions.dropPartitions, true);
 				}
 			}
 		});
@@ -658,15 +664,20 @@ const collisions = {
 		},
 
 		checkFocusWithEnemies = () => {
+			const healthMultiplier = 2;
 			for(id in enemies.dump){
 				enemy = enemies.dump[id];
 				if(enemy.position.x + enemy.size.x >= player.data.focusData.x &&
 					enemy.position.x <= player.data.focusData.x + player.data.focusData.width &&
 					enemy.position.y + enemy.size.y >= player.data.focusData.y &&
 					player.data.shotClock % player.data.shotTime == 0){
-					player.data.focusData.height -= enemy.position.y + enemy.size.y;
-					enemy.health -= 1;
-					if(bossData) bossData.life -=1;
+					if(player.data.focusData.y <= 0){
+						player.data.focusData.height = gameHeight - enemy.position.y - enemy.size.y - player.data.position.y - 24;
+						player.data.focusData.y = enemy.position.y + enemy.size.y;
+					}
+					enemy.health -= 1 * healthMultiplier;
+					if(bossData) bossData.life -= 1 * healthMultiplier;
+
 					const enemyObj = {x: enemy.position.x, y: enemy.position.y, width: enemy.size.x, height: enemy.size.y};
 					const focusObj = {x: player.data.focusData.x - 12, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
 					explosions.spawn(focusObj, enemyObj);
@@ -680,19 +691,29 @@ const collisions = {
 			collisions.check(collisions.dropPartitions, playerObj, () => {
 				for(id in drop.dump){
 					const dropItem = drop.dump[id];
-					const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
-					checkCollision(dropObj, playerObj, () => {
-						caughtDrop = true;
-						delete drop.dump[id];
-						player.data.powerLevel = 5;
-						player.data.powerClock = player.data.powerLevel * player.data.powerInterval;
+					const pullObj = {
+						x: dropItem.position.x + dropItem.size.x / 4,
+						y: dropItem.position.y + dropItem.size.y / 4,
+						width: dropItem.size.x * 4,
+						height: dropItem.size.y * 4
+					};
+					checkCollision(pullObj, playerObj, () => {
+						dropItem.pullAngle = getAngle(dropItem, player.data);
+						dropItem.speed.x = dropItem.pullSpeed * -Math.cos(dropItem.pullAngle);
+						dropItem.speed.y = dropItem.pullSpeed * -Math.sin(dropItem.pullAngle);
+						dropItem.pullSpeed += dropItem.pullSpeedDiff;
+						const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
+						checkCollision(dropObj, playerObj, () => {
+							if(dropItem.value) currentScore += dropItem.value;
+							delete drop.dump[id];
+						});
 					});
 				}
 			});
 		};
 
 		if(!gameOver){
-			if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
+			// if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
 			if(Object.keys(enemies.dump).length && Object.keys(bulletsPlayer.dump).length) checkBulletsWithEnemies();
 			if(Object.keys(drop.dump).length) getDrops();
 			if(player.data.focus && player.data.shooting) checkFocusWithEnemies();
@@ -762,7 +783,7 @@ const background = {
 	}
 
 };
-let currentWave = 'one', caughtDrop = false;
+let currentWave = 'one';
 
 const enemies = {
 
@@ -825,7 +846,6 @@ const enemies = {
 				score: 5500
 			};
 			enemyObj.position = {x: isRight ? gameWidth - grid * 3 - enemyObj.size.x : grid * 3, y: -enemyObj.size.y};
-			if(!isRight) enemyObj.drop = true;
 			enemyObj.update = () => {
 				const enemy = enemies.dump[id];
 				enemy.position.y += enemy.speed;
@@ -913,7 +933,6 @@ const enemies = {
 			};
 			enemyObj.position = {x: isRight ? gameWidth - enemyObj.size.x - grid : grid, y: -enemyObj.size.y};
 			enemyObj.initPosition = enemyObj.position;
-			if(isRight) enemyObj.drop = true;
 			const angle = getAngle(enemyObj, player.data);
 			enemyObj.speed = {x: -enemyObj.speedOffset * Math.cos(angle), y: -enemyObj.speedOffset * Math.sin(angle)};
 			enemyObj.update = () => {
@@ -984,7 +1003,6 @@ const enemies = {
 				clock: 0,
 				score: 3500
 			};
-			if(pos.x == gameWidth && pos.y == grid * 4) enemyObj.drop = true;
 			enemyObj.update = () => {
 				const enemy = enemies.dump[id];
 				enemy.position.x += pos.x > 0 ? -enemy.speed : enemy.speed;
@@ -1363,6 +1381,7 @@ const enemies = {
 		},
 
 		three(){
+			bulletsEnemies.dump = {};
 			bossData = false;
 			for(i = 0; i < 5; i++) enemies.spawn(enemies.data.three(i));
 			currentWave = 'four';
@@ -1378,6 +1397,7 @@ const enemies = {
 		},
 
 		five(){
+			bulletsEnemies.dump = {};
 			bossData = false;
 			const timeout = 350;
 			enemies.spawn(enemies.data.five(grid * 2));
@@ -1388,12 +1408,10 @@ const enemies = {
 		},
 
 		six(){
-			// currentWave = 'one';
 			const timeout = 500;
 			enemies.spawn(enemies.data.six({x: -18, y: grid * 3.5}));
 			setTimeout(() => { enemies.spawn(enemies.data.six({x: -18, y: grid * 4})); }, timeout);
 			setTimeout(() => { enemies.spawn(enemies.data.six({x: -18, y: grid * 4.5})); }, timeout * 2);
-
 			setTimeout(() => { enemies.spawn(enemies.data.six({x: gameWidth, y: grid * 3.5})); }, timeout * 3);
 			setTimeout(() => { enemies.spawn(enemies.data.six({x: gameWidth, y: grid * 4})); }, timeout * 4);
 			setTimeout(() => {
@@ -1422,6 +1440,10 @@ const enemies = {
 		enemies.dump[enemy.id] = enemy;
 	},
 
+	spawnDrops(enemy){
+		drop.spawnPoints(enemy);
+	},
+
 	update(){
 		if(Object.keys(enemies.dump).length){
 			for(id in enemies.dump){
@@ -1431,7 +1453,7 @@ const enemies = {
 					enemy.position.x + enemy.size.x < -enemy.size.x || enemy.position.x > gameWidth) delete enemies.dump[id];
 				if(enemy.health < 1){
 					currentScore += enemy.score;
-					if(enemy.drop && !caughtDrop) drop.spawn({ x: enemy.position.x + enemy.size.x / 2, y: enemy.position.y + enemy.size.y / 2});
+					enemies.spawnDrops(enemy);
 					delete enemies.dump[id];
 				}
 			}
@@ -1457,36 +1479,58 @@ const drop = {
 
 	dump: {},
 
-	data(position){
-		position.x -= 8;
-		position.y -= 8;
+	pointData(enemy){
+		let limit = 10;
+		const pointSize = 12, position = {
+			x: Math.round(enemy.position.x + enemy.size.x / 2) - pointSize / 2,
+			y: Math.round(enemy.position.y + enemy.size.y / 2) - pointSize / 2
+		};
+		if(bossData) limit *= 2;
+		let xMultiplier = Math.floor(Math.random() * limit), yMultiplier = Math.floor(Math.random() * limit);
+		position.x += Math.floor(Math.random() * 2) ? xMultiplier : -xMultiplier;
+		position.y += Math.floor(Math.random() * 2) ? yMultiplier : -yMultiplier;
 		return {
-			size: {x: 16, y: 16},
+			id: randomId(),
+			size: {x: pointSize, y: pointSize},
 			position: position,
-			speed: 0.75
+			speed: {y: 2.5, x: 0},
+			pullSpeed: 2.5,
+			pullSpeedDiff: 0.25,
+			speedDiff: -0.015,
+			speedLimit: 1,
+			img: img.dropPoint,
+			value: 300
 		}
 	},
 
-	spawn(position){
-		const dropItem = drop.data(position);
-		if(!drop.dump[dropItem.id]) drop.dump[dropItem.id] = dropItem;
+	spawnPoints(enemy){
+		const dropItems = [];
+		let dropCount = Math.round((gameHeight - (player.data.position.y - (enemy.position.y + enemy.size.y))) / 50);
+		if(!dropCount) dropCount = 1;
+		if(bossData) dropCount = dropCount * 2;
+		for(i = 0; i < dropCount; i++){
+			const dropItem = drop.pointData(enemy);
+			drop.dump[dropItem.id] = dropItem;
+		}
 	},
 
 	update(){
 		if(Object.keys(drop.dump).length){
 			for(id in drop.dump){
 				const dropItem = drop.dump[id];
-				dropItem.position.y += dropItem.speed;
+				dropItem.position.y += dropItem.speed.y;
+				dropItem.position.x += dropItem.speed.x;
+				if(dropItem.speedDiff && (dropItem.speed.y > dropItem.speedLimit)) dropItem.speed.y += dropItem.speedDiff;
+				if(dropItem.position.y >= gameHeight) delete drop.dump[id];
 			}
 		}
 	},
 
 	draw(){
-
 		if(Object.keys(drop.dump).length){
 			for(id in drop.dump){
 				const dropItem = drop.dump[id];
-				drawImg(img.power, dropItem.position.x, dropItem.position.y);
+				drawImg(dropItem.img, dropItem.position.x, dropItem.position.y);
 			}
 		}
 	}
@@ -2266,7 +2310,6 @@ const player = {
 		focusGrow: 18,
 		speed: 3,
 		speedSlow: 1,
-		powerClock: 0,
 		powerInterval: 140,
 		powerLevel: 1,
 		gameOverTime: false,
@@ -2287,11 +2330,6 @@ const player = {
 		else if(player.data.position.x + player.data.size.x > gameWidth) player.data.position.x = gameWidth - player.data.size.x;
 		if(player.data.position.y < 0) player.data.position.y = 0;
 		else if(player.data.position.y + player.data.size.y > gameHeight) player.data.position.y = gameHeight - player.data.size.y;
-
-		if(player.data.powerClock){
-			if(player.data.powerClock % player.data.powerInterval == 0 && player.data.powerClock != player.data.powerInterval * 5) player.data.powerLevel--;
-			player.data.powerClock--;
-		}
 
 		player.data.focusMax = gameHeight - (gameHeight - player.data.position.y) - 4;
 
