@@ -29,7 +29,7 @@ addImage('start', 'start');
 addImage('explosion', 'explosions');
 addImage('screen', 'screen');
 
-const isMuted = false,
+const isMuted = true,
 
 sounds = {
 	bulletOne: new Howl({src: ['sound/bullet1.wav'], volume: .1}),
@@ -483,7 +483,7 @@ const explosions = {
 	}
 
 };
-let starting = true;
+let starting = false;
 
 const start = {
 
@@ -673,19 +673,19 @@ const collisions = {
 		},
 
 		checkFocusWithEnemies = () => {
-			const healthMultiplier = 1.5;
+			const healthMultiplier = .75;
 			for(id in enemies.dump){
 				enemy = enemies.dump[id];
 				if(enemy.position.x + enemy.size.x >= player.data.focusData.x &&
-					enemy.position.x <= player.data.focusData.x + player.data.focusData.width &&
-					enemy.position.y + enemy.size.y >= player.data.focusData.y &&
-					player.data.shotClock % player.data.shotTime == 0){
+					enemy.position.x <= player.data.focusData.x + player.data.focusData.width){
 					enemy.health -= 1 * healthMultiplier;
 					if(bossData) bossData.life -= 1 * healthMultiplier;
 					const enemyObj = {x: enemy.position.x, y: enemy.position.y, width: enemy.size.x, height: enemy.size.y};
 					const focusObj = {x: player.data.focusData.x - 12, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
 					explosions.spawn(focusObj, enemyObj);
-				}
+					player.data.focusColliding = true;
+					// player.data.focusData.y = enemy.position.y + enemy.size.y;
+				} else if(player.data.focusColliding) player.data.focusColliding = false;
 
 			}
 		},
@@ -727,7 +727,7 @@ const collisions = {
 		};
 
 		if(!gameOver){
-			if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
+			// if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
 			if(Object.keys(enemies.dump).length && Object.keys(bulletsPlayer.dump).length) checkBulletsWithEnemies();
 			if(Object.keys(drop.dump).length) getDrops();
 			if(player.data.focus && player.data.shooting) checkFocusWithEnemies();
@@ -797,7 +797,7 @@ const background = {
 	}
 
 };
-let currentWave = 'one';
+let currentWave = 'lunasa';
 
 const enemies = {
 
@@ -2234,6 +2234,7 @@ const bulletsPlayer = {
 		},
 
 		doFocus = () => {
+			// console.log('focus')
 			if(!player.data.focusData){
 				player.data.focusData = {height: 0};
 				player.data.focus = true;
@@ -2244,13 +2245,14 @@ const bulletsPlayer = {
 			else if(player.data.powerLevel >= 50 && player.data.powerLevel < 75) player.data.focusData.width = 18;
 			else if(player.data.powerLevel >= 75 && player.data.powerLevel < 100) player.data.focusData.width = 24;
 			else if(player.data.powerLevel == 100) player.data.focusData.width = 32;
-
-
-			if(player.data.focusData.height < player.data.focusMax) player.data.focusData.height += player.data.focusGrow;
-			player.data.focusData.y = player.data.position.y - player.data.focusData.height - 4;
 			player.data.focusData.x += player.data.size.x / 2 - player.data.focusData.width / 2;
 			if(player.data.moving.left) player.data.focusData.x -= player.data.moveOffset;
 			else if(player.data.moving.right) player.data.focusData.x += player.data.moveOffset;
+			if(player.data.focusColliding) player.data.focusMax -= enemy.position.y + enemy.size.y;
+			if(player.data.focusData.height < player.data.focusMax) player.data.focusData.height += player.data.focusGrow;
+			else if(player.data.focusData.height > player.data.focusMax) player.data.focusData.height = player.data.focusMax;
+			// console.log(player.data.focusColliding)
+			player.data.focusData.y = player.data.position.y - player.data.focusData.height - 4;
 		};
 
 		if(player.data.shooting && !gameOver){
@@ -2278,6 +2280,9 @@ const bulletsPlayer = {
 				player.data.focusData.width - 2, player.data.focusData.height, colors.peach);
 			drawRect(player.data.focusData.x + 1, player.data.focusData.y + player.data.focusData.height,
 				player.data.focusData.width - 2, 1, colors.red);
+			if(player.data.focusColliding){
+				drawRect(player.data.focusData.x + 1, player.data.focusData.y - 1, player.data.focusData.width - 2, 1, colors.red);
+			}
 		};
 
 		if(Object.keys(bulletsPlayer.dump).length) for(id in bulletsPlayer.dump) doBullet(bulletsPlayer.dump[id]);
@@ -2302,11 +2307,12 @@ const player = {
 		focus: false,
 		focusData: false,
 		focusMax: 0,
-		focusGrow: 18,
+		focusGrow: 24,
+		focusColliding: false,
 		speed: 3,
 		speedSlow: 1,
 		powerInterval: 140,
-		powerLevel: 0,
+		powerLevel: 100,
 		powerDiff: 3,
 		gameOverTime: false,
 		gameOverLimit: 60 * 10,

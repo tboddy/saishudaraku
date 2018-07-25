@@ -108,6 +108,7 @@ const bulletsPlayer = {
 		},
 
 		doFocus = () => {
+			// console.log('focus')
 			if(!player.data.focusData){
 				player.data.focusData = {height: 0};
 				player.data.focus = true;
@@ -118,13 +119,14 @@ const bulletsPlayer = {
 			else if(player.data.powerLevel >= 50 && player.data.powerLevel < 75) player.data.focusData.width = 18;
 			else if(player.data.powerLevel >= 75 && player.data.powerLevel < 100) player.data.focusData.width = 24;
 			else if(player.data.powerLevel == 100) player.data.focusData.width = 32;
-
-
-			if(player.data.focusData.height < player.data.focusMax) player.data.focusData.height += player.data.focusGrow;
-			player.data.focusData.y = player.data.position.y - player.data.focusData.height - 4;
 			player.data.focusData.x += player.data.size.x / 2 - player.data.focusData.width / 2;
 			if(player.data.moving.left) player.data.focusData.x -= player.data.moveOffset;
 			else if(player.data.moving.right) player.data.focusData.x += player.data.moveOffset;
+			if(player.data.focusColliding) player.data.focusMax -= enemy.position.y + enemy.size.y;
+			if(player.data.focusData.height < player.data.focusMax) player.data.focusData.height += player.data.focusGrow;
+			else if(player.data.focusData.height > player.data.focusMax) player.data.focusData.height = player.data.focusMax;
+			// console.log(player.data.focusColliding)
+			player.data.focusData.y = player.data.position.y - player.data.focusData.height - 4;
 		};
 
 		if(player.data.shooting && !gameOver){
@@ -152,6 +154,9 @@ const bulletsPlayer = {
 				player.data.focusData.width - 2, player.data.focusData.height, colors.peach);
 			drawRect(player.data.focusData.x + 1, player.data.focusData.y + player.data.focusData.height,
 				player.data.focusData.width - 2, 1, colors.red);
+			if(player.data.focusColliding){
+				drawRect(player.data.focusData.x + 1, player.data.focusData.y - 1, player.data.focusData.width - 2, 1, colors.red);
+			}
 		};
 
 		if(Object.keys(bulletsPlayer.dump).length) for(id in bulletsPlayer.dump) doBullet(bulletsPlayer.dump[id]);

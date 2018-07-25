@@ -140,19 +140,19 @@ const collisions = {
 		},
 
 		checkFocusWithEnemies = () => {
-			const healthMultiplier = 1.5;
+			const healthMultiplier = .75;
 			for(id in enemies.dump){
 				enemy = enemies.dump[id];
 				if(enemy.position.x + enemy.size.x >= player.data.focusData.x &&
-					enemy.position.x <= player.data.focusData.x + player.data.focusData.width &&
-					enemy.position.y + enemy.size.y >= player.data.focusData.y &&
-					player.data.shotClock % player.data.shotTime == 0){
+					enemy.position.x <= player.data.focusData.x + player.data.focusData.width){
 					enemy.health -= 1 * healthMultiplier;
 					if(bossData) bossData.life -= 1 * healthMultiplier;
 					const enemyObj = {x: enemy.position.x, y: enemy.position.y, width: enemy.size.x, height: enemy.size.y};
 					const focusObj = {x: player.data.focusData.x - 12, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
 					explosions.spawn(focusObj, enemyObj);
-				}
+					player.data.focusColliding = true;
+					// player.data.focusData.y = enemy.position.y + enemy.size.y;
+				} else if(player.data.focusColliding) player.data.focusColliding = false;
 
 			}
 		},
@@ -194,7 +194,7 @@ const collisions = {
 		};
 
 		if(!gameOver){
-			if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
+			// if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
 			if(Object.keys(enemies.dump).length && Object.keys(bulletsPlayer.dump).length) checkBulletsWithEnemies();
 			if(Object.keys(drop.dump).length) getDrops();
 			if(player.data.focus && player.data.shooting) checkFocusWithEnemies();
