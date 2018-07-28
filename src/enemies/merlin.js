@@ -9,7 +9,8 @@ enemies.data.merlin = () => {
 		image: img.merlin,
 		waveStarted: false,
 		speed: 1.25,
-		startSpeed: 2.6,
+		startSpeed: 4.85,
+		startSpeedDiff: 0.125,
 		waveInterval: 60 * 10,
 		clock: 0,
 		bobInterval: 90,
@@ -82,7 +83,7 @@ enemies.data.merlin = () => {
 		}
 		if(enemy.startSpeed > 0){
 			enemy.position.y += enemy.startSpeed;
-			enemy.startSpeed -= 0.0325;
+			enemy.startSpeed -= enemy.startSpeedDiff;
 		} else {
 			if(enemy.clock % enemy.waveInterval < enemy.waveInterval / 2){
 				spawns.sprayBlue();

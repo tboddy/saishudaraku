@@ -260,7 +260,7 @@ const bulletsEnemies = {
 		},
 
 		lunasaSpray(enemy){
-			const id = randomId(), angleDiff = .02, bulletSize = 10;
+			const id = randomId(), angleDiff = .015, bulletSize = 10;
 			const bulletObj = {
 				id: id,
 				image: img.bulletBlue,

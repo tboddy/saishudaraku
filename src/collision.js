@@ -5,6 +5,7 @@ const collisions = {
 	playerPartitions: [],
 	playerShotPartitions: [],
 	dropPartitions: [],
+	shotPartitions: [],
 
 	get(section, element, arr, isDrop){
 		let leftX = element.x - collisions.size, rightX = element.x + element.width,
@@ -64,6 +65,7 @@ const collisions = {
 		collisions.playerPartitions = [];
 		collisions.playerShotPartitions = [];
 		collisions.dropPartitions = [];
+		collisions.shotPartitions = [];
 
 		collisions.dump.forEach(section => {
 			collisions.get(section, collisions.playerObj(), collisions.playerPartitions); // getting player
@@ -85,6 +87,11 @@ const collisions = {
 
 		const checkBulletsWithPlayer = () => {
 			let hitPlayer = false, hitGraze = false;
+			// whoa why is this not done
+
+
+
+
 			for(id in bulletsEnemies.dump){
 				bullet = bulletsEnemies.dump[id];
 				const bulletObj = {
@@ -95,7 +102,7 @@ const collisions = {
 				}, playerCollision = () => {
 					checkCollision(collisions.boundingBox(), bulletObj, () => {
 						hitPlayer = true;
-						explosions.spawn(bulletObj, {x: player.data.position.x, y: player.data.position.y, height: player.data.size.y, width: player.data.size.x});
+						explosions.spawn(bulletObj);
 					});
 				}
 				if(!bullet.grazed){
@@ -132,7 +139,7 @@ const collisions = {
 							enemy.health -= 1;
 							if(bossData) bossData.life -=1;
 							delete bulletsPlayer.dump[shotId];
-							explosions.spawn(shotObj, enemyObj);
+							explosions.spawn(shotObj);
 						});
 					}
 				});
@@ -148,10 +155,9 @@ const collisions = {
 					enemy.health -= 1 * healthMultiplier;
 					if(bossData) bossData.life -= 1 * healthMultiplier;
 					const enemyObj = {x: enemy.position.x, y: enemy.position.y, width: enemy.size.x, height: enemy.size.y};
-					const focusObj = {x: player.data.focusData.x - 12, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
-					explosions.spawn(focusObj, enemyObj);
+					const focusObj = {x: player.data.focusData.x, y: enemyObj.y, width: player.data.focusData.width, height: enemyObj.height};
+					explosions.spawn(focusObj);
 					player.data.focusColliding = true;
-					// player.data.focusData.y = enemy.position.y + enemy.size.y;
 				} else if(player.data.focusColliding) player.data.focusColliding = false;
 
 			}
@@ -207,9 +213,11 @@ const collisions = {
 				drawRect(section.x, section.y, 1, collisions.size, 'green');
 				drawRect(section.x, section.y + collisions.size, collisions.size, 1, 'green');
 			}, drawPlayer = () => {
-				if(collisions.playerPartitions.indexOf(section.id) > -1) drawRect(section.x, section.y, collisions.size, collisions.size, 'red');
+				if(collisions.playerPartitions.indexOf(section.id) > -1) drawRect(section.x, section.y, collisions.size, collisions.size, colors.red);
 			}, drawPlayerShots = () => {
-				if(collisions.playerShotPartitions.indexOf(section.id) > -1) drawRect(section.x, section.y, collisions.size, collisions.size, 'red');
+				if(collisions.playerShotPartitions.indexOf(section.id) > -1) drawRect(section.x, section.y, collisions.size, collisions.size, colors.red);
+			}, drawShots = () => {
+				if(collisions.playerShotPartitions.indexOf(section.id) > -1) drawRect(section.x, section.y, collisions.size, collisions.size, colors.red);
 			};
 			context.save();
 			context.globalAlpha = 0.5;

@@ -19,7 +19,7 @@ const player = {
 		speed: 3,
 		speedSlow: 1,
 		powerInterval: 140,
-		powerLevel: 100,
+		powerLevel: 0,
 		powerDiff: 3,
 		gameOverTime: false,
 		gameOverLimit: 60 * 10,
@@ -71,7 +71,8 @@ const player = {
 			else if(player.data.moving.right) xOffset = player.data.size.x * 2
 			context.drawImage(img.player, xOffset, 0, 28, 42, player.data.position.x, player.data.position.y, player.data.size.x, player.data.size.y);
 			yinYangs();
-			if(player.data.focus) focus();
+			// if(player.data.focus) focus();
+			focus();
 		}
 	}
 

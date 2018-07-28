@@ -10,7 +10,8 @@ enemies.data.lyrica = () => {
 		image: img.lyrica,
 		waveStarted: false,
 		speed: 1.25,
-		startSpeed: 2.6,
+		startSpeed: 4.85,
+		startSpeedDiff: 0.125,
 		waveInterval: 60 * 4.25,
 		clock: 0,
 		spray: {
@@ -89,7 +90,7 @@ enemies.data.lyrica = () => {
 		};
 		if(enemy.startSpeed > 0){
 			enemy.position.y += enemy.startSpeed;
-			enemy.startSpeed -= 0.03;
+			enemy.startSpeed -= enemy.startSpeedDiff;
 		} else {
 			checkMove();
 			const waveLimit = 2;

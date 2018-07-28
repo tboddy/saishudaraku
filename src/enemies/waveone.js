@@ -2,7 +2,7 @@ enemies.data.one = pos => {
 	const id = randomId();
 	const enemyObj = {
 		id: id,
-		isLeft: pos > gameWidth / 2,
+		isLeft: pos.x > gameWidth / 2,
 		size: {x: 18, y: 26},
 		destination: {
 			size: {x: player.data.size.x, y: player.data.size.y},
@@ -12,28 +12,34 @@ enemies.data.one = pos => {
 		finished: false,
 		angle: 0,
 		clock: 0,
-		health: 4,
-		speedMod: 0.025,
-		score: 1500
+		health: 5,
+		speedMod: 0.04,
+		score: 1500,
+		position: pos
 	};
-	enemyObj.speed = {x: enemyObj.isLeft ? -1 : 1, y: 1.25};
-	enemyObj.position = {x: pos, y: -enemyObj.size.y};
+	enemyObj.speed = {x: enemyObj.isLeft ? -1.35 : 1.35, y: 1.4};
+	enemyObj.position.x -= enemyObj.size.x / 2;
+	enemyObj.position.y -= enemyObj.size.y / 2;
 	if(!enemyObj.isLeft) enemyObj.speedMod = -enemyObj.speedMod;
 	enemyObj.update = () => {
 		const enemy = enemies.dump[id];
-		enemy.position.x += enemy.speed.x;
 		enemy.position.y += enemy.speed.y;
-		enemy.speed.x += enemyObj.speedMod;
-		if(enemy.clock == 30 && !enemy.finished){
-			enemy.finished = true;
-			modifiedAngle = 0;
-			bulletsEnemies.spawn('enemyOne', enemy);
-			bulletsEnemies.spawn('enemyOne', enemy);
-			bulletsEnemies.spawn('enemyOne', enemy);
-			bulletsEnemies.spawn('enemyOne', enemy);
-			spawnSound.bulletOne()
-		};
-		enemy.clock++;
+
+		if(enemy.shown){
+			enemy.position.x += enemy.speed.x;
+			enemy.speed.x += enemyObj.speedMod;
+			if(enemy.clock == 30 && !enemy.finished){
+				enemy.finished = true;
+				modifiedAngle = 0;
+				bulletsEnemies.spawn('enemyOne', enemy);
+				bulletsEnemies.spawn('enemyOne', enemy);
+				bulletsEnemies.spawn('enemyOne', enemy);
+				bulletsEnemies.spawn('enemyOne', enemy);
+				spawnSound.bulletOne()
+			};
+			enemy.clock++;
+		}
+
 	}
 	return enemyObj;
 };
@@ -47,12 +53,13 @@ enemies.data.two = isRight => {
 		speed: 3.25,
 		speedMod: 0.04,
 		clock: 0,
-		health: 16,
+		health: 20,
 		finished: false,
 		sprayAngle: 0,
 		score: 5500
 	};
 	enemyObj.position = {x: isRight ? gameWidth - grid * 3 - enemyObj.size.x : grid * 3, y: -enemyObj.size.y};
+	if(isRight) enemyObj.position.y *= 2.5;
 	enemyObj.update = () => {
 		const enemy = enemies.dump[id];
 		enemy.position.y += enemy.speed;
@@ -80,26 +87,23 @@ enemies.data.two = isRight => {
 };
 
 enemies.waves.one = () => {
-	const offset = 4.5;
-	const lPos = grid * offset, rPos = gameWidth - grid * offset - 18, diff = 350;
-	enemies.spawn(enemies.data.one(lPos));
-	setTimeout(() => { enemies.spawn(enemies.data.one(lPos)); }, diff);
-	setTimeout(() => { enemies.spawn(enemies.data.one(lPos)); }, diff * 2);
-	setTimeout(() => { enemies.spawn(enemies.data.one(lPos)); }, diff * 3);
-	setTimeout(() => { enemies.spawn(enemies.data.one(rPos)); }, diff * 4);
-	setTimeout(() => { enemies.spawn(enemies.data.one(rPos)); }, diff * 5);
-	setTimeout(() => { enemies.spawn(enemies.data.one(rPos)); }, diff * 6);
-	setTimeout(() => {
-		enemies.spawn(enemies.data.one(rPos));
-		currentWave = 'two';
-	}, diff * 7);
+	const yOffset = grid * 8;
+	const lX = grid * 4.5, lY = -grid * 2, rX = gameWidth - lX - 18, rY = lY - yOffset, lYB = rY - yOffset;
+	enemies.spawn(enemies.data.one({x: lX, y: lY}));
+	enemies.spawn(enemies.data.one({x: lX, y: lY - grid * 2}));
+	enemies.spawn(enemies.data.one({x: lX, y: lY - grid * 4}));
+	enemies.spawn(enemies.data.one({x: rX, y: rY}));
+	enemies.spawn(enemies.data.one({x: rX, y: rY - grid * 2}));
+	enemies.spawn(enemies.data.one({x: rX, y: rY - grid * 4}));
+	enemies.spawn(enemies.data.one({x: lX, y: lYB}));
+	enemies.spawn(enemies.data.one({x: lX, y: lYB - grid * 2}));
+	enemies.spawn(enemies.data.one({x: lX, y: lYB - grid * 4}));
+	currentWave = 'two';
 };
 
 enemies.waves.two = () => {
 	const timeout = 350;
 	enemies.spawn(enemies.data.two());
-	setTimeout(() => {
-		enemies.spawn(enemies.data.two(true));
-		currentWave = 'lunasa';
-	}, timeout);
+	enemies.spawn(enemies.data.two(true));
+	currentWave = 'lunasa';
 };

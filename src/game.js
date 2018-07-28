@@ -13,8 +13,8 @@ const updateLoop = () => {
 drawLoop = () => {
 	background.draw();
 	player.draw();
-	drop.draw();
 	bulletsPlayer.draw();
+	drop.draw();
 	bulletsEnemies.draw();
 	enemies.draw();
 	explosions.draw();

@@ -28,3 +28,4 @@ addImage('startLogo', 'startlogo');
 addImage('start', 'start');
 addImage('explosion', 'explosions');
 addImage('screen', 'screen');
+addImage('sidebar', 'sidebar');

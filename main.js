@@ -1,7 +1,7 @@
 const electron = require('electron'), path = require('path'), url = require('url'), storage = require('electron-json-storage'), scale = 2;
 let mainWindow;
 const app = electron.app, browserWindow = electron.BrowserWindow,
-  winWidth = 240, winHeight = 320;
+  winWidth = 426, winHeight = 320;
 
 createWindow = function(){
   mainWindow = new browserWindow({

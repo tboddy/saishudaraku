@@ -28,9 +28,9 @@ module.exports = function(grunt) {
 					'src/collision.js',
 					'src/background.js',
 					'src/enemies.js',
+					'src/bullets-enemies.js',
 					'src/enemies/*.js',
 					'src/drop.js',
-					'src/bullets-enemies.js',
 					'src/bullets-player.js',
 					'src/player.js',
 					'src/game.js'

@@ -9,7 +9,7 @@ const start = {
 	draw(){
 
 		const logo = () => {
-			const x = gameWidth / 2 - 192 / 2, y = grid * 1.5;
+			const x = winWidth / 2 - 192 / 2, y = grid * 1.5;
 			drawImg(img.startLogo, x, y);
 		}, prompt = () => {
 			const str = 'press shot', y = grid * 7;
@@ -20,18 +20,17 @@ const start = {
 			utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), y + grid);
 		}, instructions = () => {
 			const strs = [
-				'stick: move 8 directions',
-				'pad a/x: shot',
-				'pad b/y: focus',
-				'start: Restart'
-				// 'F: Fullscreen'
+				'z: shot',
+				'x: focus',
+				'r: restart',
+				'f: fullscreen'
 			], y = grid * 11;
 			strs.forEach((str, i) => {
 				utilities.drawString(str.toUpperCase(), utilities.centerTextX(str), y + grid * i);
 			});
 		}, credit = () => {
-			const str = '2018 peace research'.toUpperCase(), y = gameHeight - grid * 3.5,
-				verStr = 'build 18.7.23-FUCN'.toUpperCase();
+			const str = '2018 t.boddy'.toUpperCase(), y = gameHeight - grid * 3.5,
+				verStr = 'TEST BUILD v' + versionNum.toUpperCase();
 			utilities.drawString(str, utilities.centerTextX(str), y, true);
 			utilities.drawString(verStr, utilities.centerTextX(verStr), y + grid, true);
 		};

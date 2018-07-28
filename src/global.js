@@ -1,9 +1,14 @@
 let gameClock = 0, logged = false, fpsStart = 0, fpsFrame = 0, currentFps = 0, gameOver = false, savedData = {}, finishedGame = false,
 	currentScore = 0, highScore = 0;
 
-const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid = 16, gameWidth = 240, gameHeight = 320, introTime = 0,
+const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid = 16, introTime = 0,
 	{app} = require('electron').remote, browserWindow = require('electron').remote, storage = require('electron-json-storage'),
 	context = canvas.getContext('2d'), mainWindow = browserWindow.getCurrentWindow(),
+	gameWidth = 240,
+	gameHeight = 320,
+	winWidth = 426,
+
+versionNum = '0.03-redditaisai',
 
 colors = {
 	purple: '#442434',
@@ -22,8 +27,8 @@ colors = {
 },
 
 getAspect = () => {
-	var newWidth = $(window).width(), newHeight = $(window).height(), remHeight = $(window).width() * (1 + 1 / 3),
-		remWidth = $(window).height() * 0.75;
+	var newWidth = $(window).width(), newHeight = $(window).height(), remHeight = $(window).width() * 0.75,
+		remWidth = $(window).height() * (1 + 1 / 3);
 	if(newWidth >= remWidth) newWidth = remWidth;
 	else if(newHeight > remHeight) newHeight = remHeight;
 	return {width: newWidth, height: newHeight};
@@ -178,7 +183,7 @@ utilities = {
 	},
 
 	centerTextX(str){
-		return gameWidth / 2 - str.length * 8 / 2;
+		return winWidth / 2 - str.length * 8 / 2;
 	}
 
 };

@@ -1,12 +1,11 @@
-let currentWave = 'one';
+let currentWave = 'lunasa';
 
 const enemies = {
 
-	dump: {},
-	data: {},
-	waves: {},
+	dump: {}, data: {}, waves: {},
 
 	spawn(enemy){
+		enemies.shown = false;
 		enemies.dump[enemy.id] = enemy;
 	},
 
@@ -15,8 +14,10 @@ const enemies = {
 			for(id in enemies.dump){
 				const enemy = enemies.dump[id];
 				enemy.update();
-				if(enemy.position.y + enemy.size.y < -enemy.size.y || enemy.position.y > gameHeight ||
-					enemy.position.x + enemy.size.x < -enemy.size.x || enemy.position.x > gameWidth) delete enemies.dump[id];
+				if(enemy.position.y + enemy.size.y >= 0 && enemy.position.x + enemy.size.y >= 0 &&
+					enemy.position.x <= gameWidth && !enemy.shown) enemy.shown = true;
+				if((enemy.position.y + enemy.size.y < -enemy.size.y || enemy.position.y > gameHeight || enemy.position.x + enemy.size.x < -enemy.size.x ||
+					enemy.position.x > gameWidth) && enemy.shown) delete enemies.dump[id];
 				if(enemy.health < 1){
 					currentScore += enemy.score;
 					drop.spawn(enemy);

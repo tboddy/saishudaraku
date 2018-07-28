@@ -13,15 +13,11 @@ const explosions = {
 		}
 	},
 
-	spawn(bullet, enemy){
+	spawn(bullet){
 		if(explosions.spawnClock == 0){
 			const explosionObj = explosions.data();
 			explosionObj.x = (bullet.x + bullet.width / 2) - (explosionObj.size / 2);
 			explosionObj.y = (bullet.y + bullet.height / 2) - (explosionObj.size / 2);
-			if(enemy){
-				explosionObj.x += enemy.width / 2;
-				explosionObj.y += enemy.height / 2;
-			}
 			explosionObj.offset = -explosionObj.size;
 			explosions.dump.push(explosionObj);
 			explosions.spawnClock = 1;
