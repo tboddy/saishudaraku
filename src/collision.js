@@ -200,7 +200,7 @@ const collisions = {
 		};
 
 		if(!gameOver){
-			// if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
+			if(Object.keys(bulletsEnemies.dump).length) checkBulletsWithPlayer();
 			if(Object.keys(enemies.dump).length && Object.keys(bulletsPlayer.dump).length) checkBulletsWithEnemies();
 			if(Object.keys(drop.dump).length) getDrops();
 			if(player.data.focus && player.data.shooting) checkFocusWithEnemies();

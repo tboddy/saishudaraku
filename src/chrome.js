@@ -1,5 +1,5 @@
 const totalTime = 75 * 60, sidebarWidth = winWidth - gameWidth, sidebarX = gameWidth, chromeX = sidebarX + 7 + 8,
-	scoreX = chromeX + grid * 7 - 5;
+	scoreX = chromeX + grid * 7 - 5 - 8;
 
 // const totalTime = 120;
 
@@ -9,7 +9,7 @@ const chrome = {
 
 	processScore(input){
 		let scoreString = String(input);
-		for(j = scoreString.length; j < 6; j++){
+		for(j = scoreString.length; j < 7; j++){
 			scoreString = '0' + scoreString;
 		}
 		return scoreString;
@@ -21,7 +21,7 @@ const chrome = {
 				minutesLeft = Math.floor(timeLeft / 60 / 60 % 60), processTime = input => {
 				return input < 10 ? '0' + String(input) : String(input);
 			}
-			millisecondsLeft = processTime(millisecondsLeft).substring(1);
+			millisecondsLeft = processTime(millisecondsLeft);
 			secondsLeft = processTime(secondsLeft);
 			minutesLeft = processTime(minutesLeft).substring(1);
 			timeString = minutesLeft + ':' + secondsLeft + ':' + millisecondsLeft;
@@ -62,19 +62,19 @@ const chrome = {
 		}, gameOverOverlay = () => {
 			const gameOverStr = finishedGame ? 'level over' : 'game over',
 			gameOverY = gameHeight / 2 - grid * 3, restartStr = 'Press Shot to Restart';
-			utilities.drawString(gameOverStr.toUpperCase(), utilities.centerTextX(gameOverStr), gameOverY,);
-			utilities.drawString(restartStr.toUpperCase(), utilities.centerTextX(restartStr), gameOverY + grid, true);
+			utilities.drawString(gameOverStr.toUpperCase(), utilities.centerTextX(gameOverStr, true), gameOverY,);
+			utilities.drawString(restartStr.toUpperCase(), utilities.centerTextX(restartStr, true), gameOverY + grid, true);
 			if(gotHighScore){
 				const contratsStr = 'congratulations'.toUpperCase(), highStr = 'You Got the High Score'.toUpperCase(),
 					scoreStr = chrome.processScore(highScore), scoreY = gameOverY + grid * 3;
-				utilities.drawString(contratsStr, utilities.centerTextX(contratsStr), scoreY);
-				utilities.drawString(highStr, utilities.centerTextX(highStr), scoreY + grid);
-				utilities.drawString(scoreStr, utilities.centerTextX(scoreStr), scoreY + grid * 2);
+				utilities.drawString(contratsStr, utilities.centerTextX(contratsStr, true), scoreY);
+				utilities.drawString(highStr, utilities.centerTextX(highStr, true), scoreY + grid);
+				utilities.drawString(scoreStr, utilities.centerTextX(scoreStr, true), scoreY + grid * 2);
 			}
 		}, lives = () => {
 			const y = 12 + grid * 3.5;
 			utilities.drawString('player'.toUpperCase(), chromeX, y);
-			for(i = 0; i < player.data.lives - 1; i++) drawImg(img.playerlife, scoreX, y + 1);
+			for(i = 0; i < player.data.lives - 1; i++) drawImg(img.playerlife, scoreX + grid * i, y + 1);
 		}, power = () => {
 			const y = 12 + grid * 4.5;
 			let power = String(player.data.powerLevel) + '%';

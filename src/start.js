@@ -1,4 +1,4 @@
-let starting = false;
+let starting = true;
 
 const start = {
 

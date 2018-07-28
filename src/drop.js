@@ -37,11 +37,13 @@ const drop = {
 				drop.dump[dropItem.id] = dropItem;
 			}
 		}, power = () => {
-			let powerCount = Math.floor(Math.random() * 2) + 1;
-			if(bossData) powerCount = powerCount * 5;
-			for(i = 0; i < powerCount; i++){
-				const dropItem = drop.data(enemy, player.data.powerLevel < 100);
-				drop.dump[dropItem.id] = dropItem;
+			let powerCount = Math.floor(Math.random() * 2);
+			if(bossData) powerCount = powerCount + 1 * 5;
+			if(powerCount){
+				for(i = 0; i < powerCount; i++){
+					const dropItem = drop.data(enemy, player.data.powerLevel < 100);
+					drop.dump[dropItem.id] = dropItem;
+				}
 			}
 		};
 		points();

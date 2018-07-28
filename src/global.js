@@ -182,8 +182,9 @@ utilities = {
 		});
 	},
 
-	centerTextX(str){
-		return winWidth / 2 - str.length * 8 / 2;
+	centerTextX(str, isGame){
+		const width = isGame ? gameWidth : winWidth;
+		return width / 2 - str.length * 8 / 2;
 	}
 
 };

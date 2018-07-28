@@ -153,19 +153,26 @@ const bulletsEnemies = {
 			const id = randomId(), bulletSize = 10;
 			const bulletObj = {
 				id: id,
-				image: img.bulletBlue,
+				image: enemy.isRed ? img.bulletRed : img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
 					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
 					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
 				},
 				angle: enemy.sprayAngle,
-				speed: 1.25
-			}
+				speed: 1.75,
+				angleDiff: -0.0075
+			};
+
+			// console.log(enemy.position.x > gameWidth / 2)
+
+			if(enemy.position.x > gameWidth / 2) bulletObj.angleDiff = -bulletObj.angleDiff;
+
 			bulletObj.update = () => {
 				const bullet = bulletsEnemies.dump[id];
 				bullet.position.x += bullet.speed * Math.cos(bullet.angle);
 				bullet.position.y += bullet.speed * Math.sin(bullet.angle);
+				bullet.angle += bullet.angleDiff
 			}
 			return bulletObj;
 		},
@@ -321,13 +328,12 @@ const bulletsEnemies = {
 				size: {x: bulletSize, y: bulletSize},
 				position: {
 					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 + bulletSize / 2)
+					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2)
 				},
 				angle: enemy.spray.angle,
 				speedInit: 2.5,
-				speedSecond: 1.25,
+				speedSecond: 2,
 				speedDiff: .04,
-				speedSecondDiff: .05,
 				finished: false,
 				clock: 0
 			}
@@ -360,11 +366,11 @@ const bulletsEnemies = {
 				image: img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
+					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2)
 				},
 				angle: enemy.spray.angle,
-				speed: 2.5,
+				speed: 3,
 				finished: false,
 				speedMod: 0.02
 			};
@@ -385,11 +391,11 @@ const bulletsEnemies = {
 				image: img.bulletRed,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
+					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2)
 				},
 				angle: enemy.spray.angle,
-				speed: 0.5,
+				speed: 0.75,
 				finished: false,
 				speedMod: 0.007,
 				angleDiff: 0.004
@@ -411,11 +417,11 @@ const bulletsEnemies = {
 				image: img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
+					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2)
 				},
 				angle: enemy.spray.angle,
-				speed: 0.5,
+				speed: 0.75,
 				speedMod: 0.007,
 				angleDiff: 0.004
 			};
@@ -440,8 +446,8 @@ const bulletsEnemies = {
 					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
 				},
 				angle: enemy.spray.angle,
-				speed: 1,
-				angleDiff: 0.004,
+				speed: 1.25,
+				angleDiff: 0.0035,
 				speedDiff: 0.0008
 			};
 			bulletObj.update = () => {
@@ -461,7 +467,7 @@ const bulletsEnemies = {
 				image: img.bulletRedBig,
 				size: {x: bulletSize, y: bulletSize},
 				position: enemy.homing.position,
-				speed: 1,
+				speed: 1.5,
 				angleDiff: 0.004,
 				speedDiff: 0.0008
 			};
@@ -485,7 +491,7 @@ const bulletsEnemies = {
 					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
 				},
 				angle: enemy.tri.angle,
-				speed: .9,
+				speed: 1.25,
 				finished: false,
 				angleDiff: 0.004,
 				speedDiff: 0.0008
@@ -521,7 +527,7 @@ const bulletsEnemies = {
 					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
 				},
 				angle: enemy.spray.angle,
-				speed: 1
+				speed: 1.5
 			};
 			bulletObj.update = () => {
 				const bullet = bulletsEnemies.dump[id];

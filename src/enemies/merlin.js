@@ -2,7 +2,7 @@ enemies.data.merlin = () => {
 	const id = randomId();
 	const enemyObj = {
 		id: id,
-		health: 360,
+		health: 600,
 		size: {x: 30, y: 62},
 		frames: true,
 		moving: {left: false, right: true},
@@ -36,7 +36,7 @@ enemies.data.merlin = () => {
 	enemyObj.update = () => {
 		const enemy = enemies.dump[id], spawns = {
 			sprayBlue(){
-				const sprayInterval = 25;
+				const sprayInterval = 30;
 				enemy.spray.position = {x: player.data.position.x + player.data.size.x / 2, y: player.data.position.y + player.data.size.y / 2}
 				if(enemy.clock % sprayInterval == 0){
 					const sprayCount = 40;
@@ -49,7 +49,7 @@ enemies.data.merlin = () => {
 				}
 			},
 			homing(){
-				const interval = 20;
+				const interval = 60;
 				if(enemy.clock % interval == 0){
 					enemy.homing.position = {x: Math.floor(Math.random() * gameWidth), y: -16};
 					bulletsEnemies.spawn('merlinHoming', enemy);
@@ -59,7 +59,7 @@ enemies.data.merlin = () => {
 			sprayTri(){
 				const sprayInterval = 15, sprayLimit = 6
 				if(enemy.clock % sprayInterval == 0){
-					const sprayCount = 18;
+					const sprayCount = 16;
 					for(i = 0; i < sprayCount; i++){
 						if(i % sprayLimit < sprayLimit - sprayLimit / 2) bulletsEnemies.spawn('merlinTri', enemy);
 						enemy.tri.angle += Math.PI / sprayCount * 2;
@@ -71,7 +71,7 @@ enemies.data.merlin = () => {
 			sprayRed(){
 				const sprayInterval = 30;
 				if(enemy.clock % sprayInterval == 0){
-					const sprayCount = 24;
+					const sprayCount = 20;
 					for(i = 0; i < sprayCount; i++){
 						bulletsEnemies.spawn('merlinSprayRed', enemy);
 						enemy.spray.angle += Math.PI / sprayCount * 2;
@@ -95,7 +95,9 @@ enemies.data.merlin = () => {
 			if(enemy.clock % enemy.bobInterval == 0) enemy.position.y++;
 			else if(enemy.clock % enemy.bobInterval == enemy.bobInterval / 2) enemy.position.y--;
 			enemy.clock++;
-			if(enemy.health <= 0){
+			if(enemy.health <= 1){
+				enemy.health = 0;
+				bossData = false;
 				finishedGame = true;
 				gameOver = true;
 				currentWave = false;

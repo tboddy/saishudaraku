@@ -104,7 +104,7 @@ const bulletsPlayer = {
 			}
 			if(bullet.type) doTypes();
 			bullet.position.y -= ySpeed;
-			if(bullet.position.y < 0 - bullet.size.y) delete bulletsPlayer.dump[id];
+			if(bullet.position.y < -bullet.size.y) delete bulletsPlayer.dump[id];
 		},
 
 		doFocus = () => {

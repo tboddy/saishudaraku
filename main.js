@@ -1,10 +1,9 @@
-const electron = require('electron'), path = require('path'), url = require('url'), storage = require('electron-json-storage'), scale = 2;
+const {app, BrowserWindow, globalShortcut} = require('electron'), path = require('path'), url = require('url'), storage = require('electron-json-storage'), scale = 2;
 let mainWindow;
-const app = electron.app, browserWindow = electron.BrowserWindow,
-  winWidth = 426, winHeight = 320;
+const winWidth = 426, winHeight = 320;
 
 createWindow = function(){
-  mainWindow = new browserWindow({
+  mainWindow = new BrowserWindow({
     width: winWidth * scale,
     height: winHeight * scale,
     minWidth: winWidth,
@@ -16,7 +15,11 @@ createWindow = function(){
     protocol: 'file:',
     slashes: true
   }));
-  mainWindow.webContents.openDevTools()
+  globalShortcut.register('CommandOrControl+D', () => {
+    if(mainWindow.webContents.isDevToolsOpened() == false){
+      mainWindow.webContents.openDevTools();} else {
+      mainWindow.webContents.closeDevTools();}
+  })
   mainWindow.on('closed', function(){
     mainWindow = null
   });

@@ -2,7 +2,7 @@ enemies.data.lyrica = () => {
 	const id = randomId();
 	const enemyObj = {
 		id: id,
-		health: 250,
+		health: 500,
 		size: {x: 32, y: 60},
 		frames: true,
 		moving: {left: false, right: true},
@@ -12,7 +12,7 @@ enemies.data.lyrica = () => {
 		speed: 1.25,
 		startSpeed: 4.85,
 		startSpeedDiff: 0.125,
-		waveInterval: 60 * 4.25,
+		waveInterval: 60 * 5.5,
 		clock: 0,
 		spray: {
 			angle: 0,
@@ -44,32 +44,28 @@ enemies.data.lyrica = () => {
 			enemy.direction ? moveRight() : moveLeft();
 		}, spawns = {
 			spray(){
-				const sprayInterval = 10;
 				enemy.spray.position.x = enemy.direction ? grid * 2 : gameWidth - enemy.size.x - grid * 2;
-				if(enemy.clock % enemy.waveInterval < enemy.waveInterval * .33 && enemy.clock % sprayInterval == 0){
-					const sprayCount = 24;
-					for(i = 0; i < sprayCount; i++){
-						if(i < sprayCount / 2 + 1) bulletsEnemies.spawn('lyricaSprayRed', enemy);
-						enemy.spray.angle += Math.PI / sprayCount * 2;
-					}
-					spawnSound.bulletTwo()
-					enemy.spray.index = 0;
-				} else if(enemy.clock % enemy.waveInterval >= enemy.waveInterval * .5 &&
-					enemy.clock % enemy.waveInterval <= enemy.waveInterval * .75 &&
-					enemy.clock % enemy.spray.interval == 0){
-					const sprayCount = 32;
-					for(i = 0; i < sprayCount; i++){
-						// enemy.spray.index = i;
-						bulletsEnemies.spawn('lyricaSprayBlue', enemy);
-						enemy.spray.angle += Math.PI / sprayCount * 2;
-					}
-					spawnSound.bulletThree()
-					enemy.spray.index++;
+				const sprayCount = 32;
+				for(i = 0; i < sprayCount; i++){
+					if(i < sprayCount / 2 + 1) bulletsEnemies.spawn('lyricaSprayRed', enemy);
+					enemy.spray.angle += Math.PI / sprayCount * 2;
 				}
+				spawnSound.bulletTwo()
+				enemy.spray.index = 0;
+			},
+			sprayTwo(){
+				enemy.spray.position.x = enemy.direction ? grid * 2 : gameWidth - enemy.size.x - grid * 2;
+				const sprayCount = 32;
+				for(i = 0; i < sprayCount; i++){
+					bulletsEnemies.spawn('lyricaSprayBlue', enemy);
+					enemy.spray.angle += Math.PI / sprayCount * 2;
+				}
+				spawnSound.bulletThree()
+				enemy.spray.index++;
 			},
 			sprayBig(){
 				const sprayInterval = 40;
-				enemy.spray.position = {x: player.data.position.x + player.data.size.x / 2, y: player.data.position.y + player.data.size.y / 2}
+				enemy.spray.position.x = enemy.direction ? grid * 2 : gameWidth - enemy.size.x - grid * 2;
 				if(enemy.clock % sprayInterval == 0){
 					const sprayCount = 36;
 					for(i = 0; i < sprayCount; i++){
@@ -85,7 +81,6 @@ enemies.data.lyrica = () => {
 					}
 					spawnSound.bulletTwo()
 				}
-
 			}
 		};
 		if(enemy.startSpeed > 0){
@@ -93,10 +88,20 @@ enemies.data.lyrica = () => {
 			enemy.startSpeed -= enemy.startSpeedDiff;
 		} else {
 			checkMove();
-			const waveLimit = 2;
-			if(enemy.clock < enemy.waveInterval * waveLimit) spawns.spray();
-			if(enemy.clock >= enemy.waveInterval * waveLimit && enemy.clock < enemy.waveInterval * (waveLimit * 2) && !enemy.moving.left && !enemy.moving.right) spawns.sprayBig();
-			else if(enemy.clock >= enemy.waveInterval * (waveLimit * 2)){
+			const sprayInterval = 15;
+
+			if(enemy.clock < sprayInterval * 15 && enemy.clock % sprayInterval == 0) spawns.spray();
+
+			else if(enemy.clock >= enemy.waveInterval && enemy.clock < enemy.waveInterval + sprayInterval * 15 &&
+				enemy.clock % sprayInterval == 0) spawns.sprayTwo();
+
+			else if(enemy.clock >= enemy.waveInterval * 2 &&
+				enemy.clock < enemy.waveInterval * 2 + sprayInterval * 15) spawns.sprayBig();
+
+			else if(enemy.clock >= enemy.waveInterval * 3 &&
+				enemy.clock < enemy.waveInterval * 3 + sprayInterval * 15 && enemy.clock % sprayInterval == 0) spawns.spray();
+
+			else if(enemy.clock >= enemy.waveInterval * 4){
 				enemy.moving.right = false;
 				enemy.moving.left = false;
 				enemy.position.x -= enemy.speed;
@@ -106,6 +111,7 @@ enemies.data.lyrica = () => {
 			if(enemy.clock % enemy.bobInterval == 0) enemy.position.y++;
 			else if(enemy.clock % enemy.bobInterval == enemy.bobInterval / 2) enemy.position.y--;
 			enemy.clock++;
+
 		}
 	};
 	return enemyObj;

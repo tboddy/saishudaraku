@@ -1,4 +1,4 @@
-const isMuted = true,
+const isMuted = false,
 
 sounds = {
 	bulletOne: new Howl({src: ['sound/bullet1.wav'], volume: .1}),

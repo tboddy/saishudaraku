@@ -1,4 +1,4 @@
-let currentWave = 'lunasa';
+let currentWave = 'one';
 
 const enemies = {
 

@@ -2,7 +2,7 @@ enemies.data.lunasa = () => {
 	const id = randomId();
 	const enemyObj = {
 		id: id,
-		health: 350,
+		health: 400,
 		size: {x: 26, y: 60},
 		frames: true,
 		moving: {left: false, right: true},
@@ -99,15 +99,8 @@ enemies.data.lunasa = () => {
 		} else {
 			enemy.spray.position.y = enemy.position.y;
 			checkMove();
-			const waveLimit = 1;
 			if(enemy.clock < enemy.waveInterval || enemy.clock >= enemy.waveInterval * 2 && enemy.clock < enemy.waveInterval * 3) spawns.spine();
 			else if(enemy.clock >= enemy.waveInterval && enemy.clock < enemy.waveInterval + 180) spawns.spray();
-
-			// if(enemy.clock < enemy.waveInterval * waveLimit ||
-			// 	(enemy.clock >= enemy.waveInterval * waveLimit * 2 &&
-			// 	enemy.clock < enemy.waveInterval * waveLimit * 3)) spawns.spine();
-			// else if(enemy.clock >= enemy.waveInterval * waveLimit && enemy.clock < enemy.waveInterval * (waveLimit * 2)) spawns.spray();
-
 			if(enemy.clock >= enemy.waveInterval * 4){
 				enemy.moving.right = false;
 				enemy.moving.left = false;
@@ -122,6 +115,13 @@ enemies.data.lunasa = () => {
 	};
 	return enemyObj;
 };
+
+
+
+
+
+// new shit
+
 
 // enemies.data.lunasa = () => {
 	// 	const id = randomId();
@@ -177,107 +177,107 @@ enemies.data.lunasa = () => {
 	// 	return enemyObj;
 	// };
 
-bulletsEnemies.data.lunasaFirst = (enemy, opts) => {
-	const id = randomId(), bulletSize = 10;
-	return {
-		id: id,
-		image: img.bulletBlue,
-		size: {x: bulletSize, y: bulletSize},
-		position: {x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2, y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2},
-		speed: {x: 4, y: 4},
-		angle: 0,
-		update(){
-			const bullet = bulletsEnemies.dump[id], angleDiff = 0.025;
-			bullet.position.x += Math.cos(opts.angle + bullet.angle) * bullet.speed.x;
-			bullet.position.y += Math.sin(opts.angle + bullet.angle) * bullet.speed.x;
-			bullet.angle += opts.opposite ? angleDiff : -angleDiff;
-		}
-	}
-};
+// bulletsEnemies.data.lunasaFirst = (enemy, opts) => {
+// 	const id = randomId(), bulletSize = 10;
+// 	return {
+// 		id: id,
+// 		image: img.bulletBlue,
+// 		size: {x: bulletSize, y: bulletSize},
+// 		position: {x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2, y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2},
+// 		speed: {x: 4, y: 4},
+// 		angle: 0,
+// 		update(){
+// 			const bullet = bulletsEnemies.dump[id], angleDiff = 0.025;
+// 			bullet.position.x += Math.cos(opts.angle + bullet.angle) * bullet.speed.x;
+// 			bullet.position.y += Math.sin(opts.angle + bullet.angle) * bullet.speed.x;
+// 			bullet.angle += opts.opposite ? angleDiff : -angleDiff;
+// 		}
+// 	}
+// };
 
-bulletsEnemies.data.lunasaSecond = enemy => {
-	const id = randomId(), bulletSize = 16, bulletX = enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
-		bulletY = enemy.position.y + enemy.size.y / 2 + bulletSize / 2;
-	const bulletObj = {
-		id: id,
-		image: img.bulletRedBig,
-		size: {x: bulletSize, y: bulletSize},
-		position: {x: bulletX, y: bulletY},
-		speed: 3.25,
-		update(){
-			const bullet = bulletsEnemies.dump[id];
-			bullet.position.x += -Math.cos(bullet.angle) * bullet.speed;
-			bullet.position.y += -Math.sin(bullet.angle) * bullet.speed;
-		}
-	};
-	bulletObj.angle = getAngle(bulletObj, player.data);
-	bulletObj.angle += Math.random() * 1.5 - 0.75;
-	return bulletObj;
-};
+// bulletsEnemies.data.lunasaSecond = enemy => {
+// 	const id = randomId(), bulletSize = 16, bulletX = enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+// 		bulletY = enemy.position.y + enemy.size.y / 2 + bulletSize / 2;
+// 	const bulletObj = {
+// 		id: id,
+// 		image: img.bulletRedBig,
+// 		size: {x: bulletSize, y: bulletSize},
+// 		position: {x: bulletX, y: bulletY},
+// 		speed: 3.25,
+// 		update(){
+// 			const bullet = bulletsEnemies.dump[id];
+// 			bullet.position.x += -Math.cos(bullet.angle) * bullet.speed;
+// 			bullet.position.y += -Math.sin(bullet.angle) * bullet.speed;
+// 		}
+// 	};
+// 	bulletObj.angle = getAngle(bulletObj, player.data);
+// 	bulletObj.angle += Math.random() * 1.5 - 0.75;
+// 	return bulletObj;
+// };
 
-bulletsEnemies.data.lunasaSecondOrb = enemy => {
-	const id = randomId(), bulletSize = 16;
-	const bulletObj = {
-		id: id,
-		image: img.bulletBlueBig,
-		size: {x: bulletSize, y: bulletSize},
-		position: {x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2, y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2},
-		speed: 5,
-		speedDiff: 0.15,
-		finished: false,
-		update(){
-			const bullet = bulletsEnemies.dump[id];
-			bullet.position.x += -Math.cos(bullet.angle) * bullet.speed;
-			bullet.position.y += -Math.sin(bullet.angle) * bullet.speed;
-			if(bullet.speed > 0) bullet.speed -= bullet.speedDiff;
-			else if(bullet.speed < 0) bullet.speed = 0;
-			else if(bullet.speed == 0 && !bullet.finished){
-				bullet.finished = true;
-				const timeDiff = 30, opts = {
-					angle: getAngle({
-						position:{x: bullet.position.x + bullet.size.x / 2, y: bullet.position.y + bullet.size.y / 2},
-						size: {x: 10, y: 10}
-					}, player.data)
-				};
-				bulletsEnemies.spawn('lunasaSecondRay', bullet, opts);
-				setTimeout(() => {bulletsEnemies.spawn('lunasaSecondRay', bullet, opts)}, timeDiff);
-				setTimeout(() => {bulletsEnemies.spawn('lunasaSecondRay', bullet, opts)}, timeDiff * 2);
-				setTimeout(() => {bulletsEnemies.spawn('lunasaSecondRay', bullet, opts);}, timeDiff * 3);
-				setTimeout(() => {bulletsEnemies.spawn('lunasaSecondRay', bullet, opts);}, timeDiff * 4);
-				// explosions.spawn(
-				// 	{},
-				// 	{x: player.data.position.x, y: player.data.position.y, height: player.data.size.y, width: player.data.size.x}
-				// 	);
+// bulletsEnemies.data.lunasaSecondOrb = enemy => {
+// 	const id = randomId(), bulletSize = 16;
+// 	const bulletObj = {
+// 		id: id,
+// 		image: img.bulletBlueBig,
+// 		size: {x: bulletSize, y: bulletSize},
+// 		position: {x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2, y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2},
+// 		speed: 5,
+// 		speedDiff: 0.15,
+// 		finished: false,
+// 		update(){
+// 			const bullet = bulletsEnemies.dump[id];
+// 			bullet.position.x += -Math.cos(bullet.angle) * bullet.speed;
+// 			bullet.position.y += -Math.sin(bullet.angle) * bullet.speed;
+// 			if(bullet.speed > 0) bullet.speed -= bullet.speedDiff;
+// 			else if(bullet.speed < 0) bullet.speed = 0;
+// 			else if(bullet.speed == 0 && !bullet.finished){
+// 				bullet.finished = true;
+// 				const timeDiff = 30, opts = {
+// 					angle: getAngle({
+// 						position:{x: bullet.position.x + bullet.size.x / 2, y: bullet.position.y + bullet.size.y / 2},
+// 						size: {x: 10, y: 10}
+// 					}, player.data)
+// 				};
+// 				bulletsEnemies.spawn('lunasaSecondRay', bullet, opts);
+// 				setTimeout(() => {bulletsEnemies.spawn('lunasaSecondRay', bullet, opts)}, timeDiff);
+// 				setTimeout(() => {bulletsEnemies.spawn('lunasaSecondRay', bullet, opts)}, timeDiff * 2);
+// 				setTimeout(() => {bulletsEnemies.spawn('lunasaSecondRay', bullet, opts);}, timeDiff * 3);
+// 				setTimeout(() => {bulletsEnemies.spawn('lunasaSecondRay', bullet, opts);}, timeDiff * 4);
+// 				// explosions.spawn(
+// 				// 	{},
+// 				// 	{x: player.data.position.x, y: player.data.position.y, height: player.data.size.y, width: player.data.size.x}
+// 				// 	);
 
-				delete bulletsEnemies.dump[id];
-			}
-		}
-	}, angleObj = {
-		position: {x: Math.floor(Math.random() * gameWidth) + 1, y: Math.floor(Math.random() * gameHeight / 3) + 1},
-		size: {x: 2, y: 2}
-	};
-	bulletObj.angle = getAngle(bulletObj, angleObj);
-	return bulletObj;
-};
+// 				delete bulletsEnemies.dump[id];
+// 			}
+// 		}
+// 	}, angleObj = {
+// 		position: {x: Math.floor(Math.random() * gameWidth) + 1, y: Math.floor(Math.random() * gameHeight / 3) + 1},
+// 		size: {x: 2, y: 2}
+// 	};
+// 	bulletObj.angle = getAngle(bulletObj, angleObj);
+// 	return bulletObj;
+// };
 
-bulletsEnemies.data.lunasaSecondRay = (parent, opts) => {
-	const bulletSize = 10, id = randomId();
-	const bulletObj = {
-		id: id,
-		image: img.bulletBlue,
-		size: {x: bulletSize, y: bulletSize},
-		position: {x: parent.position.x + parent.size.x / 2, y: parent.position.y + parent.size.y / 2},
-		speed: -0.5,
-		speedDiff: 0.05,
-		update(){
-			const bullet = bulletsEnemies.dump[id];
-			bullet.position.x += -Math.cos(opts.angle) * bullet.speed;
-			bullet.position.y += -Math.sin(opts.angle) * bullet.speed;
-			bullet.speed += bullet.speedDiff;
-		}
-	};
-	return bulletObj;
-};
+// bulletsEnemies.data.lunasaSecondRay = (parent, opts) => {
+// 	const bulletSize = 10, id = randomId();
+// 	const bulletObj = {
+// 		id: id,
+// 		image: img.bulletBlue,
+// 		size: {x: bulletSize, y: bulletSize},
+// 		position: {x: parent.position.x + parent.size.x / 2, y: parent.position.y + parent.size.y / 2},
+// 		speed: -0.5,
+// 		speedDiff: 0.05,
+// 		update(){
+// 			const bullet = bulletsEnemies.dump[id];
+// 			bullet.position.x += -Math.cos(opts.angle) * bullet.speed;
+// 			bullet.position.y += -Math.sin(opts.angle) * bullet.speed;
+// 			bullet.speed += bullet.speedDiff;
+// 		}
+// 	};
+// 	return bulletObj;
+// };
 
 enemies.waves.lunasa = () => {
 	enemies.spawn(enemies.data.lunasa());
