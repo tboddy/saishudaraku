@@ -5,6 +5,7 @@ const updateLoop = () => {
 	bulletsPlayer.update();
 	bulletsEnemies.update();
 	enemies.update();
+	pointChrome.update();
 	explosions.update();
 	chrome.update();
 	collisions.update();
@@ -17,6 +18,7 @@ drawLoop = () => {
 	drop.draw();
 	bulletsEnemies.draw();
 	enemies.draw();
+	pointChrome.draw();
 	explosions.draw();
 	chrome.draw();
 	// collisions.draw();

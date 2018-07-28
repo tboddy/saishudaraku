@@ -29,6 +29,9 @@ addImage('start', 'start');
 addImage('explosion', 'explosions');
 addImage('screen', 'screen');
 addImage('sidebar', 'sidebar');
+addImage('leaves', 'leaves');
+addImage('sidebarLogo', 'sidebarlogo');
+addImage('graze', 'graze');
 
 const isMuted = false,
 
@@ -96,7 +99,7 @@ let gameClock = 0, logged = false, fpsStart = 0, fpsFrame = 0, currentFps = 0, g
 
 const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid = 16, introTime = 0,
 	{app} = require('electron').remote, browserWindow = require('electron').remote, storage = require('electron-json-storage'),
-	context = canvas.getContext('2d'), mainWindow = browserWindow.getCurrentWindow(),
+	context = canvas.getContext('2d'), mainWindow = browserWindow.getCurrentWindow(), grazeScore = 150,
 	gameWidth = 240,
 	gameHeight = 320,
 	winWidth = 426,
@@ -275,9 +278,12 @@ utilities = {
 		});
 	},
 
-	centerTextX(str, isGame){
-		const width = isGame ? gameWidth : winWidth;
-		return width / 2 - str.length * 8 / 2;
+	centerTextX(str, isGame, isSidebar){
+		let width = isGame ? gameWidth : winWidth;
+		if(isSidebar) width = sidebarWidth;
+		width = width / 2 - str.length * 8 / 2;
+		if(isSidebar) width += sidebarX;
+		return width;
 	}
 
 };
@@ -389,7 +395,9 @@ const chrome = {
 
 	draw(){
 		const bg = () => {
-			drawImg(img.sidebar, sidebarX, 0)
+			drawImg(img.sidebar, sidebarX, 0);
+		}, logo = () => {
+			drawImg(img.sidebarLogo, sidebarX, grid * 9);
 		}, score = () => {
 			const y = 12;
 			utilities.drawString('hiscore'.toUpperCase(), chromeX, y);
@@ -426,7 +434,8 @@ const chrome = {
 			utilities.drawString('power'.toUpperCase(), chromeX, y);
 			utilities.drawString(power, scoreX, y);
 		}, version = () => {
-			utilities.drawString('v' + versionNum.toUpperCase(), sidebarX + grid * 2 + 2, gameHeight - grid * 1.5 - 6, true);
+			const vStr = 'v' + versionNum.toUpperCase();
+			utilities.drawString(vStr,utilities.centerTextX(vStr, false, true), gameHeight - grid * 1.5 - 6, true);
 		}, boss = () => {
 			const height = 8, width = gameWidth - grid * 2, y = grid, x = grid;
 			let lifeNum = Math.round(width * (bossData.life / bossData.lifeMax));
@@ -437,12 +446,12 @@ const chrome = {
 		};
 
 		bg();
+		logo();
 		score();
 		if(player.data.lives) lives();
 		power();
 		time();
 		version();
-
 
 		if(gameOver) gameOverScreen();
 		if(bossData) boss();
@@ -549,6 +558,58 @@ const start = {
 	}
 
 };
+let totalGraze = 0;
+
+const pointChrome = {
+
+	dump: {},
+
+	data(src, input){
+		const grazeSize = 8 * input.length, angle = getAngle(src, {
+			position: {x: collisions.boundingBox().x, y: collisions.boundingBox().y},
+			size: {x: collisions.boundingBox().width, y: collisions.boundingBox().height},
+		}), speedMulti = 0.75;
+		return {
+			id: randomId(),
+			position: {
+				x: Math.round(src.position.x + src.size.x / 2 - grazeSize / 2),
+				y: Math.round(src.position.y + src.size.y / 2 - grazeSize / 2)
+			},
+			speed: {x: Math.cos(angle) * speedMulti, y: Math.sin(angle) * speedMulti},
+			size: grazeSize,
+			text: input,
+			clock: 0,
+			limit: 30
+		}
+	},
+
+	spawn(src, input){
+		const grazeItem = pointChrome.data(src, String(input));
+		pointChrome.dump[grazeItem.id] = grazeItem;
+	},
+
+	update(){
+		if(Object.keys(pointChrome.dump).length){
+			for(id in pointChrome.dump){
+				const grazeItem = pointChrome.dump[id];
+				grazeItem.position.y += grazeItem.speed.y;
+				grazeItem.position.x += grazeItem.speed.x;
+				grazeItem.clock++;
+				if(grazeItem.clock > grazeItem.limit) delete pointChrome.dump[grazeItem.id]
+			}
+		}
+	},
+
+	draw(){
+		if(Object.keys(pointChrome.dump).length){
+			for(id in pointChrome.dump){
+				const grazeItem = pointChrome.dump[id];
+				utilities.drawString(grazeItem.text, grazeItem.position.x, grazeItem.position.y);
+			}
+		}
+	}
+
+};
 const collisions = {
 
 	dump: [],
@@ -637,12 +698,7 @@ const collisions = {
 		});
 
 		const checkBulletsWithPlayer = () => {
-			let hitPlayer = false, hitGraze = false;
-			// whoa why is this not done
-
-
-
-
+			let hitPlayer = false;
 			for(id in bulletsEnemies.dump){
 				bullet = bulletsEnemies.dump[id];
 				const bulletObj = {
@@ -658,16 +714,16 @@ const collisions = {
 				}
 				if(!bullet.grazed){
 					checkCollision(collisions.playerObj(), bulletObj, () => {
-						bullet.grazed = true;
-						hitGraze = true;
+						if(!bullet.grazed){
+							bullet.grazed = true;
+							currentScore += grazeScore;
+							spawnSound.graze();
+							pointChrome.spawn(bullet, grazeScore)
+						}
 						playerCollision();
 					});
 				} else playerCollision();
 			};
-			if(hitGraze){
-				currentScore += 150;
-				spawnSound.graze();
-			}
 			if(hitPlayer){
 				player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid};
 				player.data.powerLevel -= 25;
@@ -723,7 +779,10 @@ const collisions = {
 				dropItem.pullSpeed += dropItem.pullSpeedDiff;
 				const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
 				checkCollision(dropObj, playerObj, () => {
-					if(dropItem.value) currentScore += dropItem.value;
+					if(dropItem.value){
+						currentScore += dropItem.value;
+						pointChrome.spawn(dropItem, dropItem.value)
+					}
 					else if(player.data.powerLevel < 100){
 						player.data.powerLevel += player.data.powerDiff;
 						if(player.data.powerLevel > 100) player.data.powerLevel = 100;
@@ -2581,6 +2640,7 @@ const updateLoop = () => {
 	bulletsPlayer.update();
 	bulletsEnemies.update();
 	enemies.update();
+	pointChrome.update();
 	explosions.update();
 	chrome.update();
 	collisions.update();
@@ -2593,6 +2653,7 @@ drawLoop = () => {
 	drop.draw();
 	bulletsEnemies.draw();
 	enemies.draw();
+	pointChrome.draw();
 	explosions.draw();
 	chrome.draw();
 	// collisions.draw();

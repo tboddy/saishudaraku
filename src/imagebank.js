@@ -29,3 +29,6 @@ addImage('start', 'start');
 addImage('explosion', 'explosions');
 addImage('screen', 'screen');
 addImage('sidebar', 'sidebar');
+addImage('leaves', 'leaves');
+addImage('sidebarLogo', 'sidebarlogo');
+addImage('graze', 'graze');

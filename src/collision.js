@@ -86,12 +86,7 @@ const collisions = {
 		});
 
 		const checkBulletsWithPlayer = () => {
-			let hitPlayer = false, hitGraze = false;
-			// whoa why is this not done
-
-
-
-
+			let hitPlayer = false;
 			for(id in bulletsEnemies.dump){
 				bullet = bulletsEnemies.dump[id];
 				const bulletObj = {
@@ -107,16 +102,16 @@ const collisions = {
 				}
 				if(!bullet.grazed){
 					checkCollision(collisions.playerObj(), bulletObj, () => {
-						bullet.grazed = true;
-						hitGraze = true;
+						if(!bullet.grazed){
+							bullet.grazed = true;
+							currentScore += grazeScore;
+							spawnSound.graze();
+							pointChrome.spawn(bullet, grazeScore)
+						}
 						playerCollision();
 					});
 				} else playerCollision();
 			};
-			if(hitGraze){
-				currentScore += 150;
-				spawnSound.graze();
-			}
 			if(hitPlayer){
 				player.data.position = {x: gameWidth / 2 - 28 / 2, y: gameHeight - 42 - grid};
 				player.data.powerLevel -= 25;
@@ -172,7 +167,10 @@ const collisions = {
 				dropItem.pullSpeed += dropItem.pullSpeedDiff;
 				const dropObj = {x: dropItem.position.x, y: dropItem.position.y, width: dropItem.size.x, height: dropItem.size.y};
 				checkCollision(dropObj, playerObj, () => {
-					if(dropItem.value) currentScore += dropItem.value;
+					if(dropItem.value){
+						currentScore += dropItem.value;
+						pointChrome.spawn(dropItem, dropItem.value)
+					}
 					else if(player.data.powerLevel < 100){
 						player.data.powerLevel += player.data.powerDiff;
 						if(player.data.powerLevel > 100) player.data.powerLevel = 100;

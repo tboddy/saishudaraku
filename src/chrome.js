@@ -46,7 +46,9 @@ const chrome = {
 
 	draw(){
 		const bg = () => {
-			drawImg(img.sidebar, sidebarX, 0)
+			drawImg(img.sidebar, sidebarX, 0);
+		}, logo = () => {
+			drawImg(img.sidebarLogo, sidebarX, grid * 9);
 		}, score = () => {
 			const y = 12;
 			utilities.drawString('hiscore'.toUpperCase(), chromeX, y);
@@ -83,7 +85,8 @@ const chrome = {
 			utilities.drawString('power'.toUpperCase(), chromeX, y);
 			utilities.drawString(power, scoreX, y);
 		}, version = () => {
-			utilities.drawString('v' + versionNum.toUpperCase(), sidebarX + grid * 2 + 2, gameHeight - grid * 1.5 - 6, true);
+			const vStr = 'v' + versionNum.toUpperCase();
+			utilities.drawString(vStr,utilities.centerTextX(vStr, false, true), gameHeight - grid * 1.5 - 6, true);
 		}, boss = () => {
 			const height = 8, width = gameWidth - grid * 2, y = grid, x = grid;
 			let lifeNum = Math.round(width * (bossData.life / bossData.lifeMax));
@@ -94,12 +97,12 @@ const chrome = {
 		};
 
 		bg();
+		logo();
 		score();
 		if(player.data.lives) lives();
 		power();
 		time();
 		version();
-
 
 		if(gameOver) gameOverScreen();
 		if(bossData) boss();

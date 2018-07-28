@@ -3,7 +3,7 @@ let gameClock = 0, logged = false, fpsStart = 0, fpsFrame = 0, currentFps = 0, g
 
 const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid = 16, introTime = 0,
 	{app} = require('electron').remote, browserWindow = require('electron').remote, storage = require('electron-json-storage'),
-	context = canvas.getContext('2d'), mainWindow = browserWindow.getCurrentWindow(),
+	context = canvas.getContext('2d'), mainWindow = browserWindow.getCurrentWindow(), grazeScore = 150,
 	gameWidth = 240,
 	gameHeight = 320,
 	winWidth = 426,
@@ -182,9 +182,12 @@ utilities = {
 		});
 	},
 
-	centerTextX(str, isGame){
-		const width = isGame ? gameWidth : winWidth;
-		return width / 2 - str.length * 8 / 2;
+	centerTextX(str, isGame, isSidebar){
+		let width = isGame ? gameWidth : winWidth;
+		if(isSidebar) width = sidebarWidth;
+		width = width / 2 - str.length * 8 / 2;
+		if(isSidebar) width += sidebarX;
+		return width;
 	}
 
 };
