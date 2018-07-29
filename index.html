@@ -5,7 +5,42 @@
 		<link rel="stylesheet" href="style.css" />
 	</head>
 <body>
-	<canvas id="canvas" width="426" height="320"></canvas>
+
+	<img class="background" src="img/start.png" />
+
+	<div class="game" id="game">
+		<canvas id="canvas" width="240" height="320"></canvas>
+	</div>
+
+	<div class="sidebar" id="sidebar">
+
+		<div>
+			<div id="highScoreCount" class="sidebarCount"></div>
+			<div id="highScoreLabel"></div>
+		</div>
+		<div>
+			<div id="scoreCount" class="sidebarCount"></div>
+			<div id="scoreLabel"></div>
+		</div>
+		<div class="nextRow">
+			<div id="timeCount" class="sidebarCount"></div>
+			<div id="timeLabel"></div>
+		</div>
+		<div>
+			<div id="playerCount" class="sidebarCount"></div>
+			<div id="playerLabel"></div>
+		</div>
+		<div>
+			<div id="powerCount" class="sidebarCount"></div>
+			<div id="powerLabel"></div>
+		</div>
+
+		<img src="img/sidebarlogo.png" id="sidebarLogo" class="sidebarLogo" />
+
+		<div id="versionNumber" class="versionNumber"></div>
+
+	</div>
+
 	<script>if(typeof module == 'object') window.module = module; module = undefined;</script>
 	<script src="zepto.js"></script>
 	<script src="howl.js"></script>

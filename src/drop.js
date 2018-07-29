@@ -37,7 +37,7 @@ const drop = {
 				drop.dump[dropItem.id] = dropItem;
 			}
 		}, power = () => {
-			let powerCount = Math.floor(Math.random() * 2);
+			let powerCount = Math.floor(Math.random() * 3 + 1);
 			if(bossData) powerCount = powerCount + 1 * 5;
 			if(powerCount){
 				for(i = 0; i < powerCount; i++){

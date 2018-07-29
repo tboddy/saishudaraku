@@ -32,9 +32,9 @@ addImage('screen', 'screen');
 addImage('sidebar', 'sidebar');
 addImage('leaves', 'leaves');
 addImage('sidebarLogo', 'sidebarlogo');
-addImage('graze', 'graze');
+addImage('background', 'background');
 
-const isMuted = false,
+const isMuted = true,
 
 sounds = {
 	bulletOne: new Howl({src: ['sound/bullet1.wav'], volume: .1}),
@@ -96,7 +96,7 @@ spawnSound = {
 
 }
 let gameClock = 0, logged = false, fpsStart = 0, fpsFrame = 0, currentFps = 0, gameOver = false, savedData = {}, finishedGame = false,
-	currentScore = 0, highScore = 0;
+	currentScore = 0, highScore = 0, uiScale = 2;
 
 const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid = 16, introTime = 0,
 	{app} = require('electron').remote, browserWindow = require('electron').remote, storage = require('electron-json-storage'),
@@ -124,16 +124,20 @@ colors = {
 },
 
 getAspect = () => {
-	var newWidth = $(window).width(), newHeight = $(window).height(), remHeight = $(window).width() * 0.75,
-		remWidth = $(window).height() * (1 + 1 / 3);
-	if(newWidth >= remWidth) newWidth = remWidth;
-	else if(newHeight > remHeight) newHeight = remHeight;
-	return {width: newWidth, height: newHeight};
+	// var newWidth = $(window).width(), newHeight = $(window).height(), remHeight = $(window).width() * 0.75,
+	// 	remWidth = $(window).height() * (1 + 1 / 3);
+	// if(newWidth >= remWidth) newWidth = remWidth;
+	// else if(newHeight > remHeight) newHeight = remHeight;
+	// return {width: newWidth, height: newHeight};
+	const newHeight = $(window).height() - 32, newWidth = newHeight * .75;
+	return {width: newWidth, height: newHeight}
 },
 
 resizeGame = () => {
-	var canvasWidth = getAspect().width, canvasHeight = getAspect().height;
-	canvasEl.css('width', canvasWidth + 'px').css('height', canvasHeight + 'px').css('margin-left', -(canvasWidth / 2) + 'px').css('margin-top', -(canvasHeight / 2) + 'px');
+	const canvasWidth = getAspect().width, canvasHeight = getAspect().height;
+	$('#game').css('width', canvasWidth + 'px').css('height', canvasHeight + 'px');
+	$('#sidebar').css('width', $(window).width() - canvasWidth - 36 - 18).css('height', $(window).height() - 28 * 2);
+	// canvasEl.css('width', canvasWidth + 'px').css('height', canvasHeight + 'px').css('margin-left', -(canvasWidth / 2) + 'px').css('margin-top', -(canvasHeight / 2) + 'px');
 },
 
 clearGame = () => {
@@ -271,7 +275,6 @@ utilities = {
 				case 'z': charLeft = size * 89; break;
 				case ' ': charLeft = size * 90; break;
 			};
-			// console.log(charLeft)
 			context.drawImage(img.font, charLeft, charY, size - 1, sizeY, x, y, size - 1, sizeY);
 		};
 		input.split('').forEach(function(char, i){
@@ -391,6 +394,117 @@ utilities = {
 		width = width / 2 - str.length * 8 / 2;
 		if(isSidebar) width += sidebarX;
 		return width;
+	},
+
+	drawStringCss(input, target, isAlt){
+		let output = '';
+		const drawChar = input => {
+			let charLeft = 0;
+			const size = 9, sizeY = 17, charY = isAlt ? sizeY	: 0;
+			switch(input){
+				// case '0': charLeft = numStart; break;
+				case '!': charLeft = size; break;
+				case '"': charLeft = size * 2; break;
+				case '#': charLeft = size * 3; break;
+				case '$': charLeft = size * 4; break;
+				case '%': charLeft = size * 4; break;
+				case '&': charLeft = size * 5; break;
+				case '\'': charLeft = size * 7; break;
+				case '(': charLeft = size * 7; break;
+				case ')': charLeft = size * 8; break;
+				case '*': charLeft = size * 10; break;
+				case '+': charLeft = size * 11; break;
+				case ',': charLeft = size * 12; break;
+				case '-': charLeft = size * 12; break;
+				case '.': charLeft = size * 13; break;
+				case '/': charLeft = size * 14; break;
+				case '0': charLeft = size * 15; break;
+				case '1': charLeft = size * 16; break;
+				case '2': charLeft = size * 17; break;
+				case '3': charLeft = size * 18; break;
+				case '4': charLeft = size * 19; break;
+				case '5': charLeft = size * 20; break;
+				case '6': charLeft = size * 21; break;
+				case '7': charLeft = size * 22; break;
+				case '8': charLeft = size * 23; break;
+				case '9': charLeft = size * 24; break;
+				case ':': charLeft = size * 25; break;
+				case ';': charLeft = size * 27; break;
+				case '<': charLeft = size * 28; break;
+				case '=': charLeft = size * 29; break;
+				case '>': charLeft = size * 30; break;
+				case '?': charLeft = size * 31; break;
+				case '@': charLeft = size * 32; break;
+				case 'A': charLeft = size * 32; break;
+				case 'B': charLeft = size * 33; break;
+				case 'C': charLeft = size * 34; break;
+				case 'D': charLeft = size * 35; break;
+				case 'E': charLeft = size * 36; break;
+				case 'F': charLeft = size * 37; break;
+				case 'G': charLeft = size * 38; break;
+				case 'H': charLeft = size * 39; break;
+				case 'I': charLeft = size * 40; break;
+				case 'J': charLeft = size * 41; break;
+				case 'K': charLeft = size * 42; break;
+				case 'L': charLeft = size * 43; break;
+				case 'M': charLeft = size * 44; break;
+				case 'N': charLeft = size * 45; break;
+				case 'O': charLeft = size * 46; break;
+				case 'P': charLeft = size * 47; break;
+				case 'Q': charLeft = size * 48; break;
+				case 'R': charLeft = size * 49; break;
+				case 'S': charLeft = size * 50; break;
+				case 'T': charLeft = size * 51; break;
+				case 'U': charLeft = size * 52; break;
+				case 'V': charLeft = size * 53; break;
+				case 'W': charLeft = size * 54; break;
+				case 'X': charLeft = size * 55; break;
+				case 'Y': charLeft = size * 56; break;
+				case 'Z': charLeft = size * 57; break;
+				case '[': charLeft = size * 58; break;
+				case '\\': charLeft = size * 59; break;
+				case ']': charLeft = size * 60; break;
+				case '^': charLeft = size * 61; break;
+				case '_': charLeft = size * 62; break;
+				case '`': charLeft = size * 63; break;
+				case 'a': charLeft = size * 64; break;
+				case 'b': charLeft = size * 65; break;
+				case 'c': charLeft = size * 66; break;
+				case 'd': charLeft = size * 67; break;
+				case 'e': charLeft = size * 68; break;
+				case 'f': charLeft = size * 69; break;
+				case 'g': charLeft = size * 70; break;
+				case 'h': charLeft = size * 71; break;
+				case 'i': charLeft = size * 72; break;
+				case 'j': charLeft = size * 73; break;
+				case 'k': charLeft = size * 74; break;
+				case 'l': charLeft = size * 75; break;
+				case 'm': charLeft = size * 76; break;
+				case 'n': charLeft = size * 77; break;
+				case 'o': charLeft = size * 78; break;
+				case 'p': charLeft = size * 79; break;
+				case 'q': charLeft = size * 80; break;
+				case 'r': charLeft = size * 81; break;
+				case 's': charLeft = size * 82; break;
+				case 't': charLeft = size * 83; break;
+				case 'u': charLeft = size * 84; break;
+				case 'v': charLeft = size * 85; break;
+				case 'w': charLeft = size * 86; break;
+				case 'x': charLeft = size * 87; break;
+				case 'y': charLeft = size * 88; break;
+				case 'z': charLeft = size * 89; break;
+				case ' ': charLeft = size * 90; break;
+			};
+			// context.drawImage(img.font, charLeft, charY, size - 1, sizeY, x, y, size - 1, sizeY);
+			output += '<div style="width:' + (size * uiScale) + 'px;height:' + (sizeY * uiScale) + 'px;">\
+				<span style="background-position:-' + charLeft + 'px 0px;width:' + size + 'px;height:' + sizeY + 'px;\
+					transform:scale(' + uiScale + ')"></span>\
+				</div>';
+		};
+		input.split('').forEach((char, i) => {
+			drawChar(char);
+		});
+		document.getElementById(target).innerHTML = '<div class="cssString">' + output + '</div>';
 	}
 
 };
@@ -459,7 +573,7 @@ const totalTime = 80 * 60, sidebarWidth = winWidth - gameWidth, sidebarX = gameW
 
 // const totalTime = 120;
 
-let bossData = false, timeLeft = totalTime, timeString = String(totalTime), savedScore = false, gotHighScore = false;
+let bossData = false, timeLeft = totalTime, timeString = String(totalTime), savedScore = false, gotHighScore = false, uiStarted = false;
 
 const chrome = {
 
@@ -501,21 +615,39 @@ const chrome = {
 	},
 
 	draw(){
-		const bg = () => {
-			drawImg(img.sidebar, sidebarX, 0);
-		}, logo = () => {
-			drawImg(img.sidebarLogo, sidebarX, grid * 9);
-		}, score = () => {
-			const y = 12;
-			utilities.drawString('hiscore'.toUpperCase(), chromeX, y);
-			utilities.drawString('score'.toUpperCase(), chromeX, y + grid);
-			utilities.drawString(chrome.processScore(highScore), scoreX, y);
-			utilities.drawString(chrome.processScore(currentScore), scoreX, y + grid);
+		const score = () => {
+			if(!uiStarted){
+				utilities.drawStringCss('HISCORE', 'highScoreLabel');
+				utilities.drawStringCss('SCORE', 'scoreLabel');
+				utilities.drawStringCss(chrome.processScore(highScore), 'highScoreCount');
+			}
+			if(currentScore >= highScore) utilities.drawStringCss(chrome.processScore(highScore), 'highScoreCount');
+			utilities.drawStringCss(chrome.processScore(currentScore), 'scoreCount');
+		}, lives = () => {
+			if(!uiStarted) utilities.drawStringCss('PLAYER', 'playerLabel');
+			let livesStr = '';
+			if(player.data.lives){
+				for(i = 0; i < player.data.lives - 1; i++){
+					livesStr += '<img src="img/playerlife.png" style="width:' + (16 * uiScale) + 'px;height:' + (16 * uiScale) + 'px" />'
+				}
+			}
+			document.getElementById('playerCount').innerHTML = livesStr;
+		}, power = () => {
+			if(!uiStarted) utilities.drawStringCss('POWER', 'powerLabel');
+			let powerStr = String(player.data.powerLevel) + '%';
+			if(player.data.powerLevel < 10) powerStr = '0' + powerStr;
+			else if(player.data.powerLevel == 100) powerStr = 'MAX';
+			utilities.drawStringCss(powerStr, 'powerCount');
 		}, time = () => {
+			if(!uiStarted) utilities.drawStringCss('TIME', 'timeLabel');
 			if(!timeString) timeString = '0:00:00';
-			const y = 12 + grid * 2.5;
-			utilities.drawString('time'.toUpperCase(), chromeX, y);
-			utilities.drawString(timeString, scoreX, y)
+			utilities.drawStringCss(timeString, 'timeCount');
+		}, logo = () => {
+			// const width = 96 * uiScale, height = 96 * uiScale;
+			// $('#sidebarLogo').css('width', width + 'px').css('height', height + 'px').css('margin-left', '-' + width / 2 + 'px');
+		}, version = () => {
+			$('#versionNumber').css('margin-bottom', 17 * -uiScale);
+			utilities.drawStringCss('v' + versionNum.toUpperCase(), 'versionNumber');
 		}, gameOverScreen = () => { drawImg(img.screen, 0, 0);
 		}, gameOverOverlay = () => {
 			const gameOverStr = finishedGame ? 'level over' : 'game over',
@@ -529,40 +661,27 @@ const chrome = {
 				utilities.drawString(highStr, utilities.centerTextX(highStr, true), scoreY + grid);
 				utilities.drawString(scoreStr, utilities.centerTextX(scoreStr, true), scoreY + grid * 2);
 			}
-		}, lives = () => {
-			const y = 12 + grid * 3.5;
-			utilities.drawString('player'.toUpperCase(), chromeX, y);
-			for(i = 0; i < player.data.lives - 1; i++) drawImg(img.playerlife, scoreX + grid * i, y + 1);
-		}, power = () => {
-			const y = 12 + grid * 4.5;
-			let power = String(player.data.powerLevel) + '%';
-			if(player.data.powerLevel < 10) power = '0' + power;
-			if(player.data.powerLevel == 100) power = 'MAX';
-			utilities.drawString('power'.toUpperCase(), chromeX, y);
-			utilities.drawString(power, scoreX, y);
-		}, version = () => {
-			const vStr = 'v' + versionNum.toUpperCase();
-			utilities.drawString(vStr,utilities.centerTextX(vStr, false, true), gameHeight - grid * 1.5 - 6, true);
 		}, boss = () => {
-			const height = 8, width = gameWidth - grid * 2, y = grid, x = grid;
+			const height = 8, width = gameWidth - grid, y = 8, x = 8;
 			let lifeNum = Math.floor(width * (bossData.life / bossData.lifeMax));
 			if(lifeNum < 0) lifeNum = 0;
 			drawRect(x, y, width, height, colors.purple)
 			drawRect(x, y, lifeNum, height, colors.red)
 			drawRect(x, y + height, width, 1, colors.dark)
 		};
-
-		bg();
-		logo();
 		score();
-		if(player.data.lives) lives();
+		lives();
 		power();
 		time();
-		version();
-
 		if(gameOver) gameOverScreen();
 		if(bossData) boss();
 		if(gameOver) gameOverOverlay();
+		if(!uiStarted){
+			logo();
+			version();
+			uiStarted = true;
+		}
+
 
 	}
 
@@ -618,7 +737,7 @@ const explosions = {
 	}
 
 };
-let starting = true;
+let starting = false;
 
 const start = {
 
@@ -685,6 +804,7 @@ const pointChrome = {
 			speed: {x: Math.cos(angle) * speedMulti, y: Math.sin(angle) * speedMulti},
 			size: grazeSize,
 			text: input,
+			index: Object.keys(pointChrome.dump).length,
 			clock: 0,
 			limit: 30
 		}
@@ -702,6 +822,12 @@ const pointChrome = {
 				grazeItem.position.y += grazeItem.speed.y;
 				grazeItem.position.x += grazeItem.speed.x;
 				grazeItem.clock++;
+				if(Object.keys(pointChrome.dump).length > 4){
+					for(id in pointChrome.dump){
+						if(pointChrome.dump[id].index > 0) pointChrome.dump[id].index--;
+						else delete pointChrome.dump[id];
+					}
+				}
 				if(grazeItem.clock > grazeItem.limit) delete pointChrome.dump[grazeItem.id]
 			}
 		}
@@ -2460,7 +2586,7 @@ const drop = {
 				drop.dump[dropItem.id] = dropItem;
 			}
 		}, power = () => {
-			let powerCount = Math.floor(Math.random() * 2);
+			let powerCount = Math.floor(Math.random() * 3 + 1);
 			if(bossData) powerCount = powerCount + 1 * 5;
 			if(powerCount){
 				for(i = 0; i < powerCount; i++){
@@ -2686,7 +2812,7 @@ const player = {
 		speedSlow: 1,
 		powerInterval: 140,
 		powerLevel: 0,
-		powerDiff: 5,
+		powerDiff: 2,
 		gameOverTime: false,
 		gameOverLimit: 60 * 10,
 		moveOffset: 1,

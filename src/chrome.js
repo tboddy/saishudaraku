@@ -3,7 +3,7 @@ const totalTime = 80 * 60, sidebarWidth = winWidth - gameWidth, sidebarX = gameW
 
 // const totalTime = 120;
 
-let bossData = false, timeLeft = totalTime, timeString = String(totalTime), savedScore = false, gotHighScore = false;
+let bossData = false, timeLeft = totalTime, timeString = String(totalTime), savedScore = false, gotHighScore = false, uiStarted = false;
 
 const chrome = {
 
@@ -45,21 +45,39 @@ const chrome = {
 	},
 
 	draw(){
-		const bg = () => {
-			drawImg(img.sidebar, sidebarX, 0);
-		}, logo = () => {
-			drawImg(img.sidebarLogo, sidebarX, grid * 9);
-		}, score = () => {
-			const y = 12;
-			utilities.drawString('hiscore'.toUpperCase(), chromeX, y);
-			utilities.drawString('score'.toUpperCase(), chromeX, y + grid);
-			utilities.drawString(chrome.processScore(highScore), scoreX, y);
-			utilities.drawString(chrome.processScore(currentScore), scoreX, y + grid);
+		const score = () => {
+			if(!uiStarted){
+				utilities.drawStringCss('HISCORE', 'highScoreLabel');
+				utilities.drawStringCss('SCORE', 'scoreLabel');
+				utilities.drawStringCss(chrome.processScore(highScore), 'highScoreCount');
+			}
+			if(currentScore >= highScore) utilities.drawStringCss(chrome.processScore(highScore), 'highScoreCount');
+			utilities.drawStringCss(chrome.processScore(currentScore), 'scoreCount');
+		}, lives = () => {
+			if(!uiStarted) utilities.drawStringCss('PLAYER', 'playerLabel');
+			let livesStr = '';
+			if(player.data.lives){
+				for(i = 0; i < player.data.lives - 1; i++){
+					livesStr += '<img src="img/playerlife.png" style="width:' + (16 * uiScale) + 'px;height:' + (16 * uiScale) + 'px" />'
+				}
+			}
+			document.getElementById('playerCount').innerHTML = livesStr;
+		}, power = () => {
+			if(!uiStarted) utilities.drawStringCss('POWER', 'powerLabel');
+			let powerStr = String(player.data.powerLevel) + '%';
+			if(player.data.powerLevel < 10) powerStr = '0' + powerStr;
+			else if(player.data.powerLevel == 100) powerStr = 'MAX';
+			utilities.drawStringCss(powerStr, 'powerCount');
 		}, time = () => {
+			if(!uiStarted) utilities.drawStringCss('TIME', 'timeLabel');
 			if(!timeString) timeString = '0:00:00';
-			const y = 12 + grid * 2.5;
-			utilities.drawString('time'.toUpperCase(), chromeX, y);
-			utilities.drawString(timeString, scoreX, y)
+			utilities.drawStringCss(timeString, 'timeCount');
+		}, logo = () => {
+			// const width = 96 * uiScale, height = 96 * uiScale;
+			// $('#sidebarLogo').css('width', width + 'px').css('height', height + 'px').css('margin-left', '-' + width / 2 + 'px');
+		}, version = () => {
+			$('#versionNumber').css('margin-bottom', 17 * -uiScale);
+			utilities.drawStringCss('v' + versionNum.toUpperCase(), 'versionNumber');
 		}, gameOverScreen = () => { drawImg(img.screen, 0, 0);
 		}, gameOverOverlay = () => {
 			const gameOverStr = finishedGame ? 'level over' : 'game over',
@@ -73,40 +91,27 @@ const chrome = {
 				utilities.drawString(highStr, utilities.centerTextX(highStr, true), scoreY + grid);
 				utilities.drawString(scoreStr, utilities.centerTextX(scoreStr, true), scoreY + grid * 2);
 			}
-		}, lives = () => {
-			const y = 12 + grid * 3.5;
-			utilities.drawString('player'.toUpperCase(), chromeX, y);
-			for(i = 0; i < player.data.lives - 1; i++) drawImg(img.playerlife, scoreX + grid * i, y + 1);
-		}, power = () => {
-			const y = 12 + grid * 4.5;
-			let power = String(player.data.powerLevel) + '%';
-			if(player.data.powerLevel < 10) power = '0' + power;
-			if(player.data.powerLevel == 100) power = 'MAX';
-			utilities.drawString('power'.toUpperCase(), chromeX, y);
-			utilities.drawString(power, scoreX, y);
-		}, version = () => {
-			const vStr = 'v' + versionNum.toUpperCase();
-			utilities.drawString(vStr,utilities.centerTextX(vStr, false, true), gameHeight - grid * 1.5 - 6, true);
 		}, boss = () => {
-			const height = 8, width = gameWidth - grid * 2, y = grid, x = grid;
+			const height = 8, width = gameWidth - grid, y = 8, x = 8;
 			let lifeNum = Math.floor(width * (bossData.life / bossData.lifeMax));
 			if(lifeNum < 0) lifeNum = 0;
 			drawRect(x, y, width, height, colors.purple)
 			drawRect(x, y, lifeNum, height, colors.red)
 			drawRect(x, y + height, width, 1, colors.dark)
 		};
-
-		bg();
-		logo();
 		score();
-		if(player.data.lives) lives();
+		lives();
 		power();
 		time();
-		version();
-
 		if(gameOver) gameOverScreen();
 		if(bossData) boss();
 		if(gameOver) gameOverOverlay();
+		if(!uiStarted){
+			logo();
+			version();
+			uiStarted = true;
+		}
+
 
 	}
 

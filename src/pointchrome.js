@@ -18,6 +18,7 @@ const pointChrome = {
 			speed: {x: Math.cos(angle) * speedMulti, y: Math.sin(angle) * speedMulti},
 			size: grazeSize,
 			text: input,
+			index: Object.keys(pointChrome.dump).length,
 			clock: 0,
 			limit: 30
 		}
@@ -35,6 +36,12 @@ const pointChrome = {
 				grazeItem.position.y += grazeItem.speed.y;
 				grazeItem.position.x += grazeItem.speed.x;
 				grazeItem.clock++;
+				if(Object.keys(pointChrome.dump).length > 4){
+					for(id in pointChrome.dump){
+						if(pointChrome.dump[id].index > 0) pointChrome.dump[id].index--;
+						else delete pointChrome.dump[id];
+					}
+				}
 				if(grazeItem.clock > grazeItem.limit) delete pointChrome.dump[grazeItem.id]
 			}
 		}
