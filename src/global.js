@@ -8,7 +8,7 @@ const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid =
 	gameHeight = 320,
 	winWidth = 426,
 
-versionNum = '0.03-redditaisai',
+versionNum = 'v0.04',
 
 colors = {
 	purple: '#442434',
@@ -400,7 +400,7 @@ utilities = {
 			};
 			// context.drawImage(img.font, charLeft, charY, size - 1, sizeY, x, y, size - 1, sizeY);
 			output += '<div style="width:' + (size * uiScale) + 'px;height:' + (sizeY * uiScale) + 'px;">\
-				<span style="background-position:-' + charLeft + 'px 0px;width:' + size + 'px;height:' + sizeY + 'px;\
+				<span style="background-position:-' + charLeft + 'px ' + charY + 'px;width:' + size + 'px;height:' + sizeY + 'px;\
 					transform:scale(' + uiScale + ')"></span>\
 				</div>';
 		};

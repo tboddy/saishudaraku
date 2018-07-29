@@ -27,8 +27,9 @@ drawLoop = () => {
 gameLoop = () => {
 	clearGame();
 	if(starting){
-		start.update();
-		start.draw();
+		start.init();
+		// start.update();
+		// start.draw();
 	} else {
 		updateLoop();
 		drawLoop();

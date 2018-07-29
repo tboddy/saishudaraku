@@ -1,8 +1,15 @@
-* {margin:0;padding:0;cursor:none;image-rendering:pixelated;}
+* {margin:0;padding:0;cursor:default;image-rendering:pixelated;}
+img {-webkit-user-drag: none;}
 
 body, html {background-color:#442434;overflow:hidden;}
 
 .background {position:absolute;top:0;left:0;width:100%;height:100%;z-index:1;}
+
+.start {position:absolute;top:0;left:0;width:100%;height:100%;z-index:2;}
+	.startLogo {width:50%;margin-top:10%;left:50%;position:relative;margin-left:-25%;}
+	.menu {position:absolute;left:10%;top:50%;}
+	.scores, .options {display:none;position:absolute;left:10%;top:50%;}
+	.startVersion {position:absolute;bottom:4%;right:5%;}
 
 .game {position:absolute;left:16px;top:16px;z-index:2;border:2px solid #442434;background-color:#140c1c;}
 	.game:before {position:absolute;top:0;left:0;width:100%;height:100%;content:'';z-index:2;

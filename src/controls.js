@@ -29,9 +29,11 @@ mapControls = () => {
 	}, keysUp = e => {
 		if(starting){
 			switch(e.which){
-				case 90: starting = false; break;
+				case 90: start.doMenu(); break;
 				case 70: toggleFullscreen(); break;
 				case 82: location.reload(); break;
+				case 38: start.changeOption('up'); break;
+				case 40: start.changeOption('down'); break;
 			}
 		} else if(gameOver){
 			if(player.data.shooting) player.data.shooting = false;

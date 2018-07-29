@@ -77,7 +77,7 @@ const chrome = {
 			// $('#sidebarLogo').css('width', width + 'px').css('height', height + 'px').css('margin-left', '-' + width / 2 + 'px');
 		}, version = () => {
 			$('#versionNumber').css('margin-bottom', 17 * -uiScale);
-			utilities.drawStringCss('v' + versionNum.toUpperCase(), 'versionNumber');
+			utilities.drawStringCss(versionNum, 'versionNumber');
 		}, gameOverScreen = () => { drawImg(img.screen, 0, 0);
 		}, gameOverOverlay = () => {
 			const gameOverStr = finishedGame ? 'level over' : 'game over',

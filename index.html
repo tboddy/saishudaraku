@@ -8,12 +8,36 @@
 
 	<img class="background" src="img/start.png" />
 
-	<div class="game" id="game">
-		<canvas id="canvas" width="240" height="320"></canvas>
+	<div id="start" class="start">
+
+		<img src="img/startlogo.png" class="startLogo" />
+
+		<div class="menu" id="menu">
+			<div class="menuItem" id="menuStartGame"></div>
+			<div class="menuItem" id="menuScores"></div>
+			<div class="menuItem" id="menuOptions"></div>
+			<div class="menuItem" id="menuQuit"></div>
+		</div>
+
+		<div id="scores" class="scores">
+			<div id="startScoreLabel"></div>
+			<div id="startScoreCount"></div>
+			<div id="startScoreBack"></div>
+		</div>
+
+		<div id="options" class="options">
+			<div id="startOptionsFullscreen"></div>
+			<div id="startOptionsBack"></div>
+		</div>
+
+		<div id="startVersion" class="startVersion"></div>
+
 	</div>
 
-	<div class="sidebar" id="sidebar">
-
+	<div class="game" id="game" style="display:none;">
+		<canvas id="canvas" width="240" height="320"></canvas>
+	</div>
+	<div class="sidebar" id="sidebar" style="display:none;">
 		<div>
 			<div id="highScoreCount" class="sidebarCount"></div>
 			<div id="highScoreLabel"></div>
@@ -34,11 +58,8 @@
 			<div id="powerCount" class="sidebarCount"></div>
 			<div id="powerLabel"></div>
 		</div>
-
 		<img src="img/sidebarlogo.png" id="sidebarLogo" class="sidebarLogo" />
-
 		<div id="versionNumber" class="versionNumber"></div>
-
 	</div>
 
 	<script>if(typeof module == 'object') window.module = module; module = undefined;</script>
