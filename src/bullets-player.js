@@ -77,7 +77,6 @@ const bulletsPlayer = {
 		bulletsArray.forEach(bullet => {
 			bulletsPlayer.dump[bullet.id] = bullet;
 		});
-		spawnSound.bulletPlayer();
 	},
 
 	update(){
@@ -131,7 +130,10 @@ const bulletsPlayer = {
 
 		if(player.data.shooting && !gameOver){
 			if(player.data.focus) doFocus();
-			else if(player.data.shotClock % player.data.shotTime == 0) bulletsPlayer.spawn();
+			else if(player.data.shotClock % player.data.shotTime == 0){
+				bulletsPlayer.spawn();
+				if(player.data.shotClock % (player.data.shotTime * 2) == 0) spawnSound.bulletPlayer();
+			}
 			player.data.shotClock++;
 		} else {
 			if(player.data.shotClock) player.data.shotClock = 0;

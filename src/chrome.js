@@ -1,4 +1,4 @@
-const totalTime = 75 * 60, sidebarWidth = winWidth - gameWidth, sidebarX = gameWidth, chromeX = sidebarX + 7 + 8,
+const totalTime = 80 * 60, sidebarWidth = winWidth - gameWidth, sidebarX = gameWidth, chromeX = sidebarX + 7 + 8,
 	scoreX = chromeX + grid * 7 - 5 - 8;
 
 // const totalTime = 120;

@@ -106,7 +106,7 @@ const collisions = {
 							bullet.grazed = true;
 							currentScore += grazeScore;
 							spawnSound.graze();
-							pointChrome.spawn(bullet, grazeScore)
+							pointChrome.spawn(bullet, grazeScore);
 						}
 						playerCollision();
 					});

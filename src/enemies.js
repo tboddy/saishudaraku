@@ -21,6 +21,7 @@ const enemies = {
 				if(enemy.health < 1){
 					currentScore += enemy.score;
 					drop.spawn(enemy);
+					pointChrome.spawn(enemy, enemy.score);
 					delete enemies.dump[id];
 				}
 			}

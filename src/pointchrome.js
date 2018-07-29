@@ -5,7 +5,7 @@ const pointChrome = {
 	dump: {},
 
 	data(src, input){
-		const grazeSize = 8 * input.length, angle = getAngle(src, {
+		const grazeSize = 4 * input.length, angle = getAngle(src, {
 			position: {x: collisions.boundingBox().x, y: collisions.boundingBox().y},
 			size: {x: collisions.boundingBox().width, y: collisions.boundingBox().height},
 		}), speedMulti = 0.75;
@@ -44,7 +44,7 @@ const pointChrome = {
 		if(Object.keys(pointChrome.dump).length){
 			for(id in pointChrome.dump){
 				const grazeItem = pointChrome.dump[id];
-				utilities.drawString(grazeItem.text, grazeItem.position.x, grazeItem.position.y);
+				utilities.drawStringSmall(grazeItem.text, grazeItem.position.x, grazeItem.position.y);
 			}
 		}
 	}
