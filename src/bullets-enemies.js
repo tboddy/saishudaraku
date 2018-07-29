@@ -32,8 +32,8 @@ const bulletsEnemies = {
 				image: img.bulletRed,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				angle: enemy.sprayAngle,
 				speed: 1.5,
@@ -55,8 +55,8 @@ const bulletsEnemies = {
 				image: img.bulletBlueBig,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				speedMod: 2,
 				clock: 0
@@ -79,8 +79,8 @@ const bulletsEnemies = {
 				image: img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				angle: enemy.sprayAngle,
 				speed: 1.75,
@@ -102,8 +102,8 @@ const bulletsEnemies = {
 				image: img.bulletRedBig,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				speedMod: 1.25,
 				clock: 0
@@ -135,8 +135,8 @@ const bulletsEnemies = {
 				image: enemy.position.x > gameWidth / 2 ? img.bulletRed : img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				angle: enemy.sprayAngle,
 				speed: 1.75
@@ -156,8 +156,8 @@ const bulletsEnemies = {
 				image: enemy.isRed ? img.bulletRed : img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				angle: enemy.sprayAngle,
 				speed: 1.75,
@@ -186,8 +186,8 @@ const bulletsEnemies = {
 				speedMod: 2.5
 			};
 			bulletObj.position = {
-				x: Math.round(enemy.spine.position.x + enemy.spine.size.x / 2 - bulletObj.size.x / 2),
-				y: Math.round(enemy.spine.position.y + enemy.spine.size.y / 2 + bulletObj.size.y / 2)
+				x: enemy.spine.position.x + enemy.spine.size.x / 2 - bulletObj.size.x / 2,
+				y: enemy.spine.position.y + enemy.spine.size.y / 2 + bulletObj.size.y / 2
 			};
 			let angle = getAngle(bulletObj, {size: enemy.spine.size, position: enemy.spine.initPosition});
 			const sideMod = 0.5;
@@ -225,8 +225,8 @@ const bulletsEnemies = {
 				clock: 0
 			};
 			bulletObj.position = {
-				x: Math.round(enemy.spine.position.x + enemy.spine.size.x / 2 - bulletObj.size.x / 2),
-				y: Math.round(enemy.spine.position.y + enemy.spine.size.y / 2 + bulletObj.size.y / 2)
+				x: enemy.spine.position.x + enemy.spine.size.x / 2 - bulletObj.size.x / 2,
+				y: enemy.spine.position.y + enemy.spine.size.y / 2 + bulletObj.size.y / 2
 			};
 
 			const getSpeed = () => {
@@ -245,7 +245,7 @@ const bulletsEnemies = {
 
 			const randomDestination = {
 				size: {x: 2, y: 2},
-				position: {x: Math.round(Math.random() * gameWidth), y: Math.round(Math.random() * gameHeight)}
+				position: {x: Math.random() * gameWidth, y: Math.random() * gameHeight}
 			};
 			const angle = getAngle(bulletObj, randomDestination)
 			bulletObj.speed.x = Math.cos(angle);
@@ -273,8 +273,8 @@ const bulletsEnemies = {
 				image: img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.spray.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				angle: enemy.spray.angle,
 				speed: 4,
@@ -301,8 +301,8 @@ const bulletsEnemies = {
 				image: img.bulletRedBig,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.spray.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				speedMod: 2,
 				clock: 0
@@ -327,8 +327,8 @@ const bulletsEnemies = {
 				image: img.bulletRed,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2)
+					x: enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2
 				},
 				angle: enemy.spray.angle,
 				speedInit: 2.5,
@@ -366,8 +366,8 @@ const bulletsEnemies = {
 				image: img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2)
+					x: enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2
 				},
 				angle: enemy.spray.angle,
 				speed: 3,
@@ -391,8 +391,8 @@ const bulletsEnemies = {
 				image: img.bulletRed,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2)
+					x: enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2
 				},
 				angle: enemy.spray.angle,
 				speed: 0.75,
@@ -417,8 +417,8 @@ const bulletsEnemies = {
 				image: img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2)
+					x: enemy.spray.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.spray.position.y + enemy.size.y / 2 - bulletSize / 2
 				},
 				angle: enemy.spray.angle,
 				speed: 0.75,
@@ -442,8 +442,8 @@ const bulletsEnemies = {
 				image: img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				angle: enemy.spray.angle,
 				speed: 1.25,
@@ -487,8 +487,8 @@ const bulletsEnemies = {
 				image: img.bulletRed,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				angle: enemy.tri.angle,
 				speed: 1.25,
@@ -523,8 +523,8 @@ const bulletsEnemies = {
 				image: img.bulletBlue,
 				size: {x: bulletSize, y: bulletSize},
 				position: {
-					x: Math.round(enemy.position.x + enemy.size.x / 2 - bulletSize / 2),
-					y: Math.round(enemy.position.y + enemy.size.y / 2 + bulletSize / 2)
+					x: enemy.position.x + enemy.size.x / 2 - bulletSize / 2,
+					y: enemy.position.y + enemy.size.y / 2 + bulletSize / 2
 				},
 				angle: enemy.spray.angle,
 				speed: 1.5

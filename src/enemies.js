@@ -35,7 +35,7 @@ const enemies = {
 					let xOffset = 0;
 					if(enemy.moving && (enemy.moving.left)) xOffset = enemy.size.x;
 					else if(enemy.moving && (enemy.moving.right)) xOffset = enemy.size.x * 2;
-					context.drawImage(enemy.image, xOffset, 0, enemy.size.x, enemy.size.y, enemy.position.x, enemy.position.y, enemy.size.x, enemy.size.y);
+					context.drawImage(enemy.image, xOffset, 0, enemy.size.x, enemy.size.y, Math.floor(enemy.position.x), Math.floor(enemy.position.y), enemy.size.x, enemy.size.y);
 				} else drawImg(enemy.image, enemy.position.x, enemy.position.y, enemy.size.x, enemy.size.y);
 			}
 		}

@@ -41,8 +41,8 @@ const explosions = {
 	draw(){
 		if(explosions.dump.length){
 			const drawExplosion = explosion => {
-				context.drawImage(img.explosion, explosion.offset, 0, explosion.size, explosion.size, explosion.x, explosion.y, explosion.size,
-					explosion.size);
+				context.drawImage(img.explosion, explosion.offset, 0, explosion.size, explosion.size, Math.floor(explosion.x), Math.floor(explosion.y),
+					explosion.size, explosion.size);
 			};
 			explosions.dump.forEach(drawExplosion)
 		}

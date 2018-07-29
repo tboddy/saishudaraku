@@ -69,7 +69,8 @@ const player = {
 			let xOffset = 0;
 			if(player.data.moving.left) xOffset = player.data.size.x;
 			else if(player.data.moving.right) xOffset = player.data.size.x * 2
-			context.drawImage(img.player, xOffset, 0, 28, 42, player.data.position.x, player.data.position.y, player.data.size.x, player.data.size.y);
+			context.drawImage(img.player, xOffset, 0, 28, 42, Math.floor(player.data.position.x), Math.floor(player.data.position.y), player.data.size.x,
+				player.data.size.y);
 			yinYangs();
 			// if(player.data.focus) focus();
 			focus();

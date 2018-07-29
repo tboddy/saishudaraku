@@ -89,7 +89,7 @@ const chrome = {
 			utilities.drawString(vStr,utilities.centerTextX(vStr, false, true), gameHeight - grid * 1.5 - 6, true);
 		}, boss = () => {
 			const height = 8, width = gameWidth - grid * 2, y = grid, x = grid;
-			let lifeNum = Math.round(width * (bossData.life / bossData.lifeMax));
+			let lifeNum = Math.floor(width * (bossData.life / bossData.lifeMax));
 			if(lifeNum < 0) lifeNum = 0;
 			drawRect(x, y, width, height, colors.purple)
 			drawRect(x, y, lifeNum, height, colors.red)

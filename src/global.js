@@ -46,14 +46,14 @@ clearGame = () => {
 
 drawRect = (x, y, width, height, color) => {
 	context.beginPath();
-	context.rect(x, y, width, height);
+	context.rect(Math.floor(x), Math.floor(y), width, height);
 	context.fillStyle = color;
 	context.fill();
 },
 
 drawImg = (img, dx, dy, dWidth, dHeight, rotate) => {
-	if(dWidth && dHeight) context.drawImage(img, dx, dy, dWidth, dHeight);
-	else context.drawImage(img, dx, dy);
+	if(dWidth && dHeight) context.drawImage(img, Math.floor(dx), Math.floor(dy), dWidth, dHeight);
+	else context.drawImage(img, Math.floor(dx), Math.floor(dy));
 },
 
 randomId = () => {
