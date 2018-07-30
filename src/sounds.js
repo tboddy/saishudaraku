@@ -1,11 +1,11 @@
-const isMuted = true,
+const isMuted = false,
 
 sounds = {
 	bulletOne: new Howl({src: ['sound/bullet1.wav'], volume: .1}),
 	bulletTwo: new Howl({src: ['sound/bullet2.wav'], volume: .1}),
 	bulletThree: new Howl({src: ['sound/bullet3.wav'], volume: .1}),
-	bulletPlayer: new Howl({src: ['sound/explosion.wav'], volume: 1}),
-	explosion: new Howl({src: ['sound/explosion.wav'], volume: .5}),
+	bulletPlayer: new Howl({src: ['sound/explosion.wav'], volume: .2}),
+	explosion: new Howl({src: ['sound/explosion.wav'], volume: .4}),
 	graze: new Howl({src: ['sound/graze.wav'], volume: 0.1})
 	// bgmOne: new Howl({src: ['sound/bgm1.mp3'], volume: 0.75})
 };
@@ -35,11 +35,12 @@ spawnSound = {
 	},
 
 	bulletThree(){
-		clearBullets()
+		clearBullets();
 		sounds.bulletThree.play();
 	},
 
 	explosion(){
+		if(sounds.bulletPlayer.playing()) sounds.bulletPlayer.stop();
 		if(sounds.explosion.playing()) sounds.explosion.stop();
 		sounds.explosion.play();
 	},

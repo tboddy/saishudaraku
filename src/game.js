@@ -39,6 +39,11 @@ gameLoop = () => {
 },
 
 initGame = () => {
+	if(!starting){
+		$('#start').remove();
+		$('#game').show();
+		$('#sidebar').show();
+	}
 	context.imageSmoothingEnabled = false;
 	storage.get('savedData', (err, data) => {
 		savedData = data;

@@ -10,33 +10,48 @@
 
 	<div id="start" class="start">
 
-		<img src="img/startlogo.png" class="startLogo" />
+		<img src="img/startlogo.png" class="startLogo" id="startLogo" />
 
 		<div class="menu" id="menu">
-			<div class="menuItem" id="menuStartGame"></div>
-			<div class="menuItem" id="menuScores"></div>
-			<div class="menuItem" id="menuOptions"></div>
-			<div class="menuItem" id="menuQuit"></div>
+			<div class="stringBigContainer midBottom" id="menuStartGame"></div>
+			<div class="stringBigContainer midBottom" id="menuScores"></div>
+			<div class="stringBigContainer midBottom" id="menuOptions"></div>
+			<div class="stringBigContainer" id="menuQuit"></div>
 		</div>
 
 		<div id="scores" class="scores">
-			<div id="startScoreLabel"></div>
-			<div id="startScoreCount"></div>
-			<div id="startScoreBack"></div>
+			<div id="startScoreLabel" class="stringBigContainer midBottom"></div>
+			<div id="startScoreCount" class="stringBigContainer fullBottom"></div>
+			<div id="startScoreBack" class="stringBigContainer"></div>
 		</div>
 
 		<div id="options" class="options">
-			<div id="startOptionsFullscreen"></div>
+			<!-- <div id="startOptionsFullscreen"></div> -->
 			<div id="startOptionsBack"></div>
 		</div>
 
-		<div id="startVersion" class="startVersion"></div>
+		<div id="startVersion" class="stringBigContainer startVersion"></div>
+
 
 	</div>
 
 	<div class="game" id="game" style="display:none;">
 		<canvas id="canvas" width="240" height="320"></canvas>
+		<div class="gameOverScreen" id="gameOverScreen">
+			<div id="gameOverLabel" class="stringBigContainer biggerBottom"></div>
+
+			<div id="gameOverHighScore" class="gameOverHighScore">
+				<div id="congratsOverLabel" class="stringBigContainer midBottom"></div>
+				<div id="scoreOverLabel" class="stringBigContainer midBottom"></div>
+				<div id="scoreOverLabelTwo" class="stringBigContainer midBottom"></div>
+				<div id="scoreOverCount" class="stringBigContainer biggerBottom"></div>
+			</div>
+
+			<div id="restartOverLabel" class="stringBigContainer midBottom"></div>
+			<div id="restartOverLabelTwo" class="stringBigContainer"></div>
+		</div>
 	</div>
+
 	<div class="sidebar" id="sidebar" style="display:none;">
 		<div>
 			<div id="highScoreCount" class="sidebarCount"></div>

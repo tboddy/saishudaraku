@@ -65,26 +65,27 @@ const start = {
 
 	renderMenu(){
 		start.menu.items.forEach((item, index) => {
-			utilities.drawStringCss(item.str, item.target, index == start.menu.current);
+			const activeColor = index == start.menu.current ? 'red' : false;
+			utilities.drawStringCssBig(item.str, item.target, activeColor);
 		});
 	},
 
 	renderScores(){
-		utilities.drawStringCss('CURRENT HIGH SCORE', 'startScoreLabel');
-		utilities.drawStringCss(chrome.processScore(highScore), 'startScoreCount');
-		utilities.drawStringCss('BACK', 'startScoreBack', true);
+		utilities.drawStringCssBig('CURRENT HIGH SCORE', 'startScoreLabel');
+		utilities.drawStringCssBig(chrome.processScore(highScore), 'startScoreCount');
+		utilities.drawStringCssBig('BACK', 'startScoreBack', 'red');
 	},
 
 	renderOptions(){
-		// utilities.drawStringCss('TOGGLE FULLSCREEN', 'startOptionsFullscreen', true);
-		utilities.drawStringCss('BACK', 'startOptionsBack', true);
+		utilities.drawStringCssBig('BACK', 'startOptionsBack', 'red');
 	},
 
 	renderVersion(){
-		utilities.drawStringCss(versionNum, 'startVersion', true);
+		utilities.drawStringCssBig(versionNum, 'startVersion', 'red');
 	},
 
 	init(){
+		$('#startLogo').show();
 		start.renderMenu();
 		start.renderScores();
 		start.renderOptions();

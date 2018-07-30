@@ -6,9 +6,8 @@ const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid =
 	context = canvas.getContext('2d'), mainWindow = browserWindow.getCurrentWindow(), grazeScore = 150,
 	gameWidth = 240,
 	gameHeight = 320,
-	winWidth = 426,
 
-versionNum = 'v0.04',
+versionNum = 'VER 0.04',
 
 colors = {
 	purple: '#442434',
@@ -27,11 +26,6 @@ colors = {
 },
 
 getAspect = () => {
-	// var newWidth = $(window).width(), newHeight = $(window).height(), remHeight = $(window).width() * 0.75,
-	// 	remWidth = $(window).height() * (1 + 1 / 3);
-	// if(newWidth >= remWidth) newWidth = remWidth;
-	// else if(newHeight > remHeight) newHeight = remHeight;
-	// return {width: newWidth, height: newHeight};
 	const newHeight = $(window).height() - 32, newWidth = newHeight * .75;
 	return {width: newWidth, height: newHeight}
 },
@@ -39,7 +33,7 @@ getAspect = () => {
 resizeGame = () => {
 	const canvasWidth = getAspect().width, canvasHeight = getAspect().height;
 	$('#game').css('width', canvasWidth + 'px').css('height', canvasHeight + 'px');
-	$('#sidebar').css('width', $(window).width() - canvasWidth - 36 - 18).css('height', $(window).height() - 28 * 2);
+	$('#sidebar').css('width', $(window).width() - canvasWidth - 32 - 16).css('height', $(window).height() - 28);
 	// canvasEl.css('width', canvasWidth + 'px').css('height', canvasHeight + 'px').css('margin-left', -(canvasWidth / 2) + 'px').css('margin-top', -(canvasHeight / 2) + 'px');
 },
 
@@ -291,21 +285,25 @@ utilities = {
 		});
 	},
 
-	centerTextX(str, isGame, isSidebar){
-		let width = isGame ? gameWidth : winWidth;
-		if(isSidebar) width = sidebarWidth;
-		width = width / 2 - str.length * 8 / 2;
-		if(isSidebar) width += sidebarX;
-		return width;
+	centerTextX(str){
+		return gameWidth / 2 - str.length * 8 / 2;
 	},
 
-	drawStringCss(input, target, isAlt){
+	drawStringCssBig(input, target, color){
+		input = input.toUpperCase();
 		let output = '';
 		const drawChar = input => {
-			let charLeft = 0;
-			const size = 9, sizeY = 17, charY = isAlt ? sizeY	: 0;
+			let charLeft = 0, charY = 0;
+			const size = 17;
+			if(color){
+				switch(color){
+					case 'red': charY = size; break;
+					case 'gray': charY = size * 6; break;
+					case 'grayDark': charY = size * 7; break;
+				}
+				charY = -charY;
+			}
 			switch(input){
-				// case '0': charLeft = numStart; break;
 				case '!': charLeft = size; break;
 				case '"': charLeft = size * 2; break;
 				case '#': charLeft = size * 3; break;
@@ -370,44 +368,16 @@ utilities = {
 				case '^': charLeft = size * 61; break;
 				case '_': charLeft = size * 62; break;
 				case '`': charLeft = size * 63; break;
-				case 'a': charLeft = size * 64; break;
-				case 'b': charLeft = size * 65; break;
-				case 'c': charLeft = size * 66; break;
-				case 'd': charLeft = size * 67; break;
-				case 'e': charLeft = size * 68; break;
-				case 'f': charLeft = size * 69; break;
-				case 'g': charLeft = size * 70; break;
-				case 'h': charLeft = size * 71; break;
-				case 'i': charLeft = size * 72; break;
-				case 'j': charLeft = size * 73; break;
-				case 'k': charLeft = size * 74; break;
-				case 'l': charLeft = size * 75; break;
-				case 'm': charLeft = size * 76; break;
-				case 'n': charLeft = size * 77; break;
-				case 'o': charLeft = size * 78; break;
-				case 'p': charLeft = size * 79; break;
-				case 'q': charLeft = size * 80; break;
-				case 'r': charLeft = size * 81; break;
-				case 's': charLeft = size * 82; break;
-				case 't': charLeft = size * 83; break;
-				case 'u': charLeft = size * 84; break;
-				case 'v': charLeft = size * 85; break;
-				case 'w': charLeft = size * 86; break;
-				case 'x': charLeft = size * 87; break;
-				case 'y': charLeft = size * 88; break;
-				case 'z': charLeft = size * 89; break;
-				case ' ': charLeft = size * 90; break;
+				case ' ': charLeft = size * 64; break;
 			};
-			// context.drawImage(img.font, charLeft, charY, size - 1, sizeY, x, y, size - 1, sizeY);
-			output += '<div style="width:' + (size * uiScale) + 'px;height:' + (sizeY * uiScale) + 'px;">\
-				<span style="background-position:-' + charLeft + 'px ' + charY + 'px;width:' + size + 'px;height:' + sizeY + 'px;\
-					transform:scale(' + uiScale + ')"></span>\
+			output += '<div style="width:' + size + 'px;height:' + size + 'px;">\
+				<span style="background-position:-' + charLeft + 'px ' + charY + 'px;width:' + size + 'px;height:' + size + 'px;"></span>\
 				</div>';
 		};
 		input.split('').forEach((char, i) => {
 			drawChar(char);
 		});
-		document.getElementById(target).innerHTML = '<div class="cssString">' + output + '</div>';
+		document.getElementById(target).innerHTML = '<div class="cssString cssStringBig">' + output + '</div>';
 	}
 
 };

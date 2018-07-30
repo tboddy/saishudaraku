@@ -34,14 +34,14 @@ addImage('leaves', 'leaves');
 addImage('sidebarLogo', 'sidebarlogo');
 addImage('background', 'background');
 
-const isMuted = true,
+const isMuted = false,
 
 sounds = {
 	bulletOne: new Howl({src: ['sound/bullet1.wav'], volume: .1}),
 	bulletTwo: new Howl({src: ['sound/bullet2.wav'], volume: .1}),
 	bulletThree: new Howl({src: ['sound/bullet3.wav'], volume: .1}),
-	bulletPlayer: new Howl({src: ['sound/explosion.wav'], volume: 1}),
-	explosion: new Howl({src: ['sound/explosion.wav'], volume: .5}),
+	bulletPlayer: new Howl({src: ['sound/explosion.wav'], volume: .2}),
+	explosion: new Howl({src: ['sound/explosion.wav'], volume: .4}),
 	graze: new Howl({src: ['sound/graze.wav'], volume: 0.1})
 	// bgmOne: new Howl({src: ['sound/bgm1.mp3'], volume: 0.75})
 };
@@ -71,11 +71,12 @@ spawnSound = {
 	},
 
 	bulletThree(){
-		clearBullets()
+		clearBullets();
 		sounds.bulletThree.play();
 	},
 
 	explosion(){
+		if(sounds.bulletPlayer.playing()) sounds.bulletPlayer.stop();
 		if(sounds.explosion.playing()) sounds.explosion.stop();
 		sounds.explosion.play();
 	},
@@ -103,9 +104,8 @@ const canvas = document.getElementById('canvas'), canvasEl = $('canvas'), grid =
 	context = canvas.getContext('2d'), mainWindow = browserWindow.getCurrentWindow(), grazeScore = 150,
 	gameWidth = 240,
 	gameHeight = 320,
-	winWidth = 426,
 
-versionNum = 'v0.04',
+versionNum = 'VER 0.04',
 
 colors = {
 	purple: '#442434',
@@ -124,11 +124,6 @@ colors = {
 },
 
 getAspect = () => {
-	// var newWidth = $(window).width(), newHeight = $(window).height(), remHeight = $(window).width() * 0.75,
-	// 	remWidth = $(window).height() * (1 + 1 / 3);
-	// if(newWidth >= remWidth) newWidth = remWidth;
-	// else if(newHeight > remHeight) newHeight = remHeight;
-	// return {width: newWidth, height: newHeight};
 	const newHeight = $(window).height() - 32, newWidth = newHeight * .75;
 	return {width: newWidth, height: newHeight}
 },
@@ -136,7 +131,7 @@ getAspect = () => {
 resizeGame = () => {
 	const canvasWidth = getAspect().width, canvasHeight = getAspect().height;
 	$('#game').css('width', canvasWidth + 'px').css('height', canvasHeight + 'px');
-	$('#sidebar').css('width', $(window).width() - canvasWidth - 36 - 18).css('height', $(window).height() - 28 * 2);
+	$('#sidebar').css('width', $(window).width() - canvasWidth - 32 - 16).css('height', $(window).height() - 28);
 	// canvasEl.css('width', canvasWidth + 'px').css('height', canvasHeight + 'px').css('margin-left', -(canvasWidth / 2) + 'px').css('margin-top', -(canvasHeight / 2) + 'px');
 },
 
@@ -388,21 +383,25 @@ utilities = {
 		});
 	},
 
-	centerTextX(str, isGame, isSidebar){
-		let width = isGame ? gameWidth : winWidth;
-		if(isSidebar) width = sidebarWidth;
-		width = width / 2 - str.length * 8 / 2;
-		if(isSidebar) width += sidebarX;
-		return width;
+	centerTextX(str){
+		return gameWidth / 2 - str.length * 8 / 2;
 	},
 
-	drawStringCss(input, target, isAlt){
+	drawStringCssBig(input, target, color){
+		input = input.toUpperCase();
 		let output = '';
 		const drawChar = input => {
-			let charLeft = 0;
-			const size = 9, sizeY = 17, charY = isAlt ? sizeY	: 0;
+			let charLeft = 0, charY = 0;
+			const size = 17;
+			if(color){
+				switch(color){
+					case 'red': charY = size; break;
+					case 'gray': charY = size * 6; break;
+					case 'grayDark': charY = size * 7; break;
+				}
+				charY = -charY;
+			}
 			switch(input){
-				// case '0': charLeft = numStart; break;
 				case '!': charLeft = size; break;
 				case '"': charLeft = size * 2; break;
 				case '#': charLeft = size * 3; break;
@@ -467,44 +466,16 @@ utilities = {
 				case '^': charLeft = size * 61; break;
 				case '_': charLeft = size * 62; break;
 				case '`': charLeft = size * 63; break;
-				case 'a': charLeft = size * 64; break;
-				case 'b': charLeft = size * 65; break;
-				case 'c': charLeft = size * 66; break;
-				case 'd': charLeft = size * 67; break;
-				case 'e': charLeft = size * 68; break;
-				case 'f': charLeft = size * 69; break;
-				case 'g': charLeft = size * 70; break;
-				case 'h': charLeft = size * 71; break;
-				case 'i': charLeft = size * 72; break;
-				case 'j': charLeft = size * 73; break;
-				case 'k': charLeft = size * 74; break;
-				case 'l': charLeft = size * 75; break;
-				case 'm': charLeft = size * 76; break;
-				case 'n': charLeft = size * 77; break;
-				case 'o': charLeft = size * 78; break;
-				case 'p': charLeft = size * 79; break;
-				case 'q': charLeft = size * 80; break;
-				case 'r': charLeft = size * 81; break;
-				case 's': charLeft = size * 82; break;
-				case 't': charLeft = size * 83; break;
-				case 'u': charLeft = size * 84; break;
-				case 'v': charLeft = size * 85; break;
-				case 'w': charLeft = size * 86; break;
-				case 'x': charLeft = size * 87; break;
-				case 'y': charLeft = size * 88; break;
-				case 'z': charLeft = size * 89; break;
-				case ' ': charLeft = size * 90; break;
+				case ' ': charLeft = size * 64; break;
 			};
-			// context.drawImage(img.font, charLeft, charY, size - 1, sizeY, x, y, size - 1, sizeY);
-			output += '<div style="width:' + (size * uiScale) + 'px;height:' + (sizeY * uiScale) + 'px;">\
-				<span style="background-position:-' + charLeft + 'px ' + charY + 'px;width:' + size + 'px;height:' + sizeY + 'px;\
-					transform:scale(' + uiScale + ')"></span>\
+			output += '<div style="width:' + size + 'px;height:' + size + 'px;">\
+				<span style="background-position:-' + charLeft + 'px ' + charY + 'px;width:' + size + 'px;height:' + size + 'px;"></span>\
 				</div>';
 		};
 		input.split('').forEach((char, i) => {
 			drawChar(char);
 		});
-		document.getElementById(target).innerHTML = '<div class="cssString">' + output + '</div>';
+		document.getElementById(target).innerHTML = '<div class="cssString cssStringBig">' + output + '</div>';
 	}
 
 };
@@ -570,12 +541,12 @@ mapControls = () => {
 	document.addEventListener('keydown', keysDown);
 	document.addEventListener('keyup', keysUp);
 };
-const totalTime = 80 * 60, sidebarWidth = winWidth - gameWidth, sidebarX = gameWidth, chromeX = sidebarX + 7 + 8,
-	scoreX = chromeX + grid * 7 - 5 - 8;
+const totalTime = 80 * 60;
 
 // const totalTime = 120;
 
-let bossData = false, timeLeft = totalTime, timeString = String(totalTime), savedScore = false, gotHighScore = false, uiStarted = false;
+let bossData = false, timeLeft = totalTime, timeString = String(totalTime), savedScore = false, gotHighScore = false, uiStarted = false,
+	gameOverStarted = false;
 
 const chrome = {
 
@@ -619,50 +590,43 @@ const chrome = {
 	draw(){
 		const score = () => {
 			if(!uiStarted){
-				utilities.drawStringCss('HISCORE', 'highScoreLabel');
-				utilities.drawStringCss('SCORE', 'scoreLabel');
-				utilities.drawStringCss(chrome.processScore(highScore), 'highScoreCount');
+				utilities.drawStringCssBig('hiscore', 'highScoreLabel');
+				utilities.drawStringCssBig('score', 'scoreLabel');
+				utilities.drawStringCssBig(chrome.processScore(highScore), 'highScoreCount');
 			}
-			if(currentScore >= highScore) utilities.drawStringCss(chrome.processScore(highScore), 'highScoreCount');
-			utilities.drawStringCss(chrome.processScore(currentScore), 'scoreCount');
+			if(currentScore >= highScore) utilities.drawStringCssBig(chrome.processScore(highScore), 'highScoreCount');
+			utilities.drawStringCssBig(chrome.processScore(currentScore), 'scoreCount');
+		}, time = () => {
+			if(!uiStarted) utilities.drawStringCssBig('time', 'timeLabel');
+			if(!timeString) timeString = '0:00:00';
+			utilities.drawStringCssBig(timeString, 'timeCount');
 		}, lives = () => {
-			if(!uiStarted) utilities.drawStringCss('PLAYER', 'playerLabel');
+			if(!uiStarted) utilities.drawStringCssBig('player', 'playerLabel');
 			let livesStr = '';
-			if(player.data.lives){
-				for(i = 0; i < player.data.lives - 1; i++){
-					livesStr += '<img src="img/playerlife.png" style="width:' + (16 * uiScale) + 'px;height:' + (16 * uiScale) + 'px" />'
-				}
-			}
+			if(player.data.lives) for(i = 0; i < player.data.lives - 1; i++) livesStr += '<img src="img/playerlife.png" />'
 			document.getElementById('playerCount').innerHTML = livesStr;
 		}, power = () => {
-			if(!uiStarted) utilities.drawStringCss('POWER', 'powerLabel');
+			if(!uiStarted) utilities.drawStringCssBig('power', 'powerLabel');
 			let powerStr = String(player.data.powerLevel) + '%';
 			if(player.data.powerLevel < 10) powerStr = '0' + powerStr;
-			else if(player.data.powerLevel == 100) powerStr = 'MAX';
-			utilities.drawStringCss(powerStr, 'powerCount');
-		}, time = () => {
-			if(!uiStarted) utilities.drawStringCss('TIME', 'timeLabel');
-			if(!timeString) timeString = '0:00:00';
-			utilities.drawStringCss(timeString, 'timeCount');
-		}, logo = () => {
-			// const width = 96 * uiScale, height = 96 * uiScale;
-			// $('#sidebarLogo').css('width', width + 'px').css('height', height + 'px').css('margin-left', '-' + width / 2 + 'px');
+			else if(player.data.powerLevel == 100) powerStr = 'max';
+			utilities.drawStringCssBig(powerStr, 'powerCount');
 		}, version = () => {
-			$('#versionNumber').css('margin-bottom', 17 * -uiScale);
-			utilities.drawStringCss(versionNum, 'versionNumber');
-		}, gameOverScreen = () => { drawImg(img.screen, 0, 0);
+			utilities.drawStringCssBig(versionNum, 'versionNumber', 'red');
 		}, gameOverOverlay = () => {
-			const gameOverStr = finishedGame ? 'level over' : 'game over',
-			gameOverY = gameHeight / 2 - grid * 3, restartStr = 'Press Shot to Restart';
-			utilities.drawString(gameOverStr.toUpperCase(), utilities.centerTextX(gameOverStr, true), gameOverY,);
-			utilities.drawString(restartStr.toUpperCase(), utilities.centerTextX(restartStr, true), gameOverY + grid, true);
+			$('#gameOverScreen').css('display', 'flex');
+			utilities.drawStringCssBig((finishedGame ? 'level over' : 'game over'), 'gameOverLabel');
+			utilities.drawStringCssBig('press shot', 'restartOverLabel', 'red');
+			utilities.drawStringCssBig('to restart', 'restartOverLabelTwo', 'red');
 			if(gotHighScore){
-				const contratsStr = 'congratulations'.toUpperCase(), highStr = 'You Got the High Score'.toUpperCase(),
-					scoreStr = chrome.processScore(highScore), scoreY = gameOverY + grid * 3;
-				utilities.drawString(contratsStr, utilities.centerTextX(contratsStr, true), scoreY);
-				utilities.drawString(highStr, utilities.centerTextX(highStr, true), scoreY + grid);
-				utilities.drawString(scoreStr, utilities.centerTextX(scoreStr, true), scoreY + grid * 2);
+				$('#gameOverHighScore').css('display', 'flex');
+				utilities.drawStringCssBig('congratulations', 'congratsOverLabel');
+				utilities.drawStringCssBig('you got the', 'scoreOverLabel');
+				utilities.drawStringCssBig('high score', 'scoreOverLabelTwo');
+				utilities.drawStringCssBig('high score', 'scoreOverLabelTwo');
+				utilities.drawStringCssBig(chrome.processScore(highScore), 'scoreOverCount');
 			}
+			gameOverStarted = true;
 		}, boss = () => {
 			const height = 8, width = gameWidth - grid, y = 8, x = 8;
 			let lifeNum = Math.floor(width * (bossData.life / bossData.lifeMax));
@@ -675,11 +639,9 @@ const chrome = {
 		lives();
 		power();
 		time();
-		if(gameOver) gameOverScreen();
 		if(bossData) boss();
-		if(gameOver) gameOverOverlay();
+		if(gameOver && !gameOverStarted) gameOverOverlay();
 		if(!uiStarted){
-			logo();
 			version();
 			uiStarted = true;
 		}
@@ -806,26 +768,27 @@ const start = {
 
 	renderMenu(){
 		start.menu.items.forEach((item, index) => {
-			utilities.drawStringCss(item.str, item.target, index == start.menu.current);
+			const activeColor = index == start.menu.current ? 'red' : false;
+			utilities.drawStringCssBig(item.str, item.target, activeColor);
 		});
 	},
 
 	renderScores(){
-		utilities.drawStringCss('CURRENT HIGH SCORE', 'startScoreLabel');
-		utilities.drawStringCss(chrome.processScore(highScore), 'startScoreCount');
-		utilities.drawStringCss('BACK', 'startScoreBack', true);
+		utilities.drawStringCssBig('CURRENT HIGH SCORE', 'startScoreLabel');
+		utilities.drawStringCssBig(chrome.processScore(highScore), 'startScoreCount');
+		utilities.drawStringCssBig('BACK', 'startScoreBack', 'red');
 	},
 
 	renderOptions(){
-		// utilities.drawStringCss('TOGGLE FULLSCREEN', 'startOptionsFullscreen', true);
-		utilities.drawStringCss('BACK', 'startOptionsBack', true);
+		utilities.drawStringCssBig('BACK', 'startOptionsBack', 'red');
 	},
 
 	renderVersion(){
-		utilities.drawStringCss(versionNum, 'startVersion', true);
+		utilities.drawStringCssBig(versionNum, 'startVersion', 'red');
 	},
 
 	init(){
+		$('#startLogo').show();
 		start.renderMenu();
 		start.renderScores();
 		start.renderOptions();
@@ -2960,6 +2923,11 @@ gameLoop = () => {
 },
 
 initGame = () => {
+	if(!starting){
+		$('#start').remove();
+		$('#game').show();
+		$('#sidebar').show();
+	}
 	context.imageSmoothingEnabled = false;
 	storage.get('savedData', (err, data) => {
 		savedData = data;

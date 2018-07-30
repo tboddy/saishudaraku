@@ -1,7 +1,7 @@
 const {app, BrowserWindow, globalShortcut} = require('electron'), path = require('path'), url = require('url'),
   storage = require('electron-json-storage'), scale = 1;
 let mainWindow;
-const winWidth = 800, winHeight = 600;
+const winWidth = 640, winHeight = 480;
 
 createWindow = function(){
   mainWindow = new BrowserWindow({

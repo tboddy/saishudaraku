@@ -1,9 +1,9 @@
-const totalTime = 80 * 60, sidebarWidth = winWidth - gameWidth, sidebarX = gameWidth, chromeX = sidebarX + 7 + 8,
-	scoreX = chromeX + grid * 7 - 5 - 8;
+const totalTime = 80 * 60;
 
 // const totalTime = 120;
 
-let bossData = false, timeLeft = totalTime, timeString = String(totalTime), savedScore = false, gotHighScore = false, uiStarted = false;
+let bossData = false, timeLeft = totalTime, timeString = String(totalTime), savedScore = false, gotHighScore = false, uiStarted = false,
+	gameOverStarted = false;
 
 const chrome = {
 
@@ -47,50 +47,43 @@ const chrome = {
 	draw(){
 		const score = () => {
 			if(!uiStarted){
-				utilities.drawStringCss('HISCORE', 'highScoreLabel');
-				utilities.drawStringCss('SCORE', 'scoreLabel');
-				utilities.drawStringCss(chrome.processScore(highScore), 'highScoreCount');
+				utilities.drawStringCssBig('hiscore', 'highScoreLabel');
+				utilities.drawStringCssBig('score', 'scoreLabel');
+				utilities.drawStringCssBig(chrome.processScore(highScore), 'highScoreCount');
 			}
-			if(currentScore >= highScore) utilities.drawStringCss(chrome.processScore(highScore), 'highScoreCount');
-			utilities.drawStringCss(chrome.processScore(currentScore), 'scoreCount');
+			if(currentScore >= highScore) utilities.drawStringCssBig(chrome.processScore(highScore), 'highScoreCount');
+			utilities.drawStringCssBig(chrome.processScore(currentScore), 'scoreCount');
+		}, time = () => {
+			if(!uiStarted) utilities.drawStringCssBig('time', 'timeLabel');
+			if(!timeString) timeString = '0:00:00';
+			utilities.drawStringCssBig(timeString, 'timeCount');
 		}, lives = () => {
-			if(!uiStarted) utilities.drawStringCss('PLAYER', 'playerLabel');
+			if(!uiStarted) utilities.drawStringCssBig('player', 'playerLabel');
 			let livesStr = '';
-			if(player.data.lives){
-				for(i = 0; i < player.data.lives - 1; i++){
-					livesStr += '<img src="img/playerlife.png" style="width:' + (16 * uiScale) + 'px;height:' + (16 * uiScale) + 'px" />'
-				}
-			}
+			if(player.data.lives) for(i = 0; i < player.data.lives - 1; i++) livesStr += '<img src="img/playerlife.png" />'
 			document.getElementById('playerCount').innerHTML = livesStr;
 		}, power = () => {
-			if(!uiStarted) utilities.drawStringCss('POWER', 'powerLabel');
+			if(!uiStarted) utilities.drawStringCssBig('power', 'powerLabel');
 			let powerStr = String(player.data.powerLevel) + '%';
 			if(player.data.powerLevel < 10) powerStr = '0' + powerStr;
-			else if(player.data.powerLevel == 100) powerStr = 'MAX';
-			utilities.drawStringCss(powerStr, 'powerCount');
-		}, time = () => {
-			if(!uiStarted) utilities.drawStringCss('TIME', 'timeLabel');
-			if(!timeString) timeString = '0:00:00';
-			utilities.drawStringCss(timeString, 'timeCount');
-		}, logo = () => {
-			// const width = 96 * uiScale, height = 96 * uiScale;
-			// $('#sidebarLogo').css('width', width + 'px').css('height', height + 'px').css('margin-left', '-' + width / 2 + 'px');
+			else if(player.data.powerLevel == 100) powerStr = 'max';
+			utilities.drawStringCssBig(powerStr, 'powerCount');
 		}, version = () => {
-			$('#versionNumber').css('margin-bottom', 17 * -uiScale);
-			utilities.drawStringCss(versionNum, 'versionNumber');
-		}, gameOverScreen = () => { drawImg(img.screen, 0, 0);
+			utilities.drawStringCssBig(versionNum, 'versionNumber', 'red');
 		}, gameOverOverlay = () => {
-			const gameOverStr = finishedGame ? 'level over' : 'game over',
-			gameOverY = gameHeight / 2 - grid * 3, restartStr = 'Press Shot to Restart';
-			utilities.drawString(gameOverStr.toUpperCase(), utilities.centerTextX(gameOverStr, true), gameOverY,);
-			utilities.drawString(restartStr.toUpperCase(), utilities.centerTextX(restartStr, true), gameOverY + grid, true);
+			$('#gameOverScreen').css('display', 'flex');
+			utilities.drawStringCssBig((finishedGame ? 'level over' : 'game over'), 'gameOverLabel');
+			utilities.drawStringCssBig('press shot', 'restartOverLabel', 'red');
+			utilities.drawStringCssBig('to restart', 'restartOverLabelTwo', 'red');
 			if(gotHighScore){
-				const contratsStr = 'congratulations'.toUpperCase(), highStr = 'You Got the High Score'.toUpperCase(),
-					scoreStr = chrome.processScore(highScore), scoreY = gameOverY + grid * 3;
-				utilities.drawString(contratsStr, utilities.centerTextX(contratsStr, true), scoreY);
-				utilities.drawString(highStr, utilities.centerTextX(highStr, true), scoreY + grid);
-				utilities.drawString(scoreStr, utilities.centerTextX(scoreStr, true), scoreY + grid * 2);
+				$('#gameOverHighScore').css('display', 'flex');
+				utilities.drawStringCssBig('congratulations', 'congratsOverLabel');
+				utilities.drawStringCssBig('you got the', 'scoreOverLabel');
+				utilities.drawStringCssBig('high score', 'scoreOverLabelTwo');
+				utilities.drawStringCssBig('high score', 'scoreOverLabelTwo');
+				utilities.drawStringCssBig(chrome.processScore(highScore), 'scoreOverCount');
 			}
+			gameOverStarted = true;
 		}, boss = () => {
 			const height = 8, width = gameWidth - grid, y = 8, x = 8;
 			let lifeNum = Math.floor(width * (bossData.life / bossData.lifeMax));
@@ -103,11 +96,9 @@ const chrome = {
 		lives();
 		power();
 		time();
-		if(gameOver) gameOverScreen();
 		if(bossData) boss();
-		if(gameOver) gameOverOverlay();
+		if(gameOver && !gameOverStarted) gameOverOverlay();
 		if(!uiStarted){
-			logo();
 			version();
 			uiStarted = true;
 		}
